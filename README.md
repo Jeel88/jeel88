@@ -77,7 +77,7 @@
 
 <picture>
   <source srcset="https://raw.githubusercontent.com/jeel88/jeel88/output/pacman-contribution-graph-dark.svg">
-  <img src="https://raw.githubusercontent.com/jeel88/jeel88/output/pacman-contribution-graph-dark.svg" alt="Pacman" />
+  <img src="https://raw.githubusercontent.com/jeel88/jeel88/output/pacman-contribution-graph.svg" width="100%" />
 </picture>
 
 
