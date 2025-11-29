@@ -75,12 +75,6 @@
 
 ###
 
-<picture>
-  <source srcset="https://raw.githubusercontent.com/jeel88/jeel88/output/pacman-contribution-graph-dark.svg">
-  <img src="https://raw.githubusercontent.com/jeel88/jeel88/output/pacman-contribution-graph.svg" width="100%" />
-</picture>
-
-
 
 <div align="center">
   <img src="https://profile-counter.glitch.me/jeel88/count.svg?"  />
