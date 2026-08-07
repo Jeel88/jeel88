@@ -2,7 +2,7 @@
 
 # 👋 Hi, I'm Jeel Savaliya
 
-### • Python • Flutter • AI • Full Stack Developer
+### • Python Developer • Flutter Developer • AI • Full Stack Developer
 
 ---
 
@@ -36,6 +36,6 @@ Dream       : MS in USA 🇺🇸
 
 ---
 
-## GitHub
+## Social
 
 Coming Soon...
