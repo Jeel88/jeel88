@@ -2,7 +2,7 @@
 
 # 👋 Hi, I'm Jeel Savaliya
 
-### • Python Developer • Flutter Developer • AI • Full Stack Developer
+### • Python Developer • Web Developer • AI Developer
 
 ---
 
@@ -31,8 +31,7 @@ jeel@github % whoami
 ```text
 Name        : Jeel Savaliya
 Education   : B.Tech Information Technology
-Role        : Flutter Developer
-Learning    : • Python • Flutter • AI • Machine Learning • Cloud
+Learning    : • Python • Web • AI • Machine Learning • Cloud
 Dream       : MS in USA 🇺🇸
 ```
 

@@ -1166,7 +1166,7 @@
 
 
     <!-- ================================================= -->
-    <!-- FLUTTER DEVELOPER -->
+    <!-- Web DEVELOPER -->
     <!-- ================================================= -->
 
     <text
@@ -1176,13 +1176,13 @@
         font-size="16"
         font-family="monospace">
 
-        Flutter Developer
+        Web Developer
 
     </text>
 
 
     <!-- ================================================= -->
-    <!-- AI BUILDER -->
+    <!-- AI Developer -->
     <!-- ================================================= -->
 
     <text
@@ -1192,7 +1192,7 @@
         font-size="16"
         font-family="monospace">
 
-        AI Builder
+        AI Developer
 
     </text>
 
