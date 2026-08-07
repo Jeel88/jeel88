@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="410"
+    height="100"
+    viewBox="0 0 410 100">
+
+    <!-- ================================= -->
+    <!-- JEEL CLIP -->
+    <!-- ================================= -->
+
+    <clipPath id="typingClip">
+
+        <rect
+            x="0"
+            y="0"
+            width="0"
+            height="100">
+
+            <animate
+                attributeName="width"
+                from="0"
+                to="410"
+                dur="1.8s"
+                begin="0s"
+                fill="freeze"/>
+
+        </rect>
+
+    </clipPath>
+
+
+    <!-- ================================= -->
+    <!-- ASCII NAME -->
+    <!-- ================================= -->
+
+    <g clip-path="url(#typingClip)">
+
+        
+        <text
+            x="0"
+            y="12"
+            fill="#38bdf8"
+            font-size="10px"
+            font-family="monospace"
+            xml:space="preserve">     ██╗███████╗███████╗██╗     </text>
+        
+
+        <text
+            x="0"
+            y="25"
+            fill="#38bdf8"
+            font-size="10px"
+            font-family="monospace"
+            xml:space="preserve">     ██║██╔════╝██╔════╝██║     </text>
+        
+
+        <text
+            x="0"
+            y="38"
+            fill="#38bdf8"
+            font-size="10px"
+            font-family="monospace"
+            xml:space="preserve">     ██║█████╗  █████╗  ██║     </text>
+        
+
+        <text
+            x="0"
+            y="51"
+            fill="#38bdf8"
+            font-size="10px"
+            font-family="monospace"
+            xml:space="preserve">██   ██║██╔══╝  ██╔══╝  ██║     </text>
+        
+
+        <text
+            x="0"
+            y="64"
+            fill="#38bdf8"
+            font-size="10px"
+            font-family="monospace"
+            xml:space="preserve">╚█████╔╝███████╗███████╗███████╗</text>
+        
+
+        <text
+            x="0"
+            y="77"
+            fill="#38bdf8"
+            font-size="10px"
+            font-family="monospace"
+            xml:space="preserve"> ╚════╝ ╚══════╝╚══════╝╚══════╝</text>
+        
+
+    </g>
+
+
+    <!-- ================================= -->
+    <!-- CURSOR -->
+    <!-- ================================= -->
+
+    <rect
+        x="0"
+        y="4"
+        width="3"
+        height="72"
+        fill="#38bdf8">
+
+        <animate
+            attributeName="x"
+            from="0"
+            to="410"
+            dur="1.8s"
+            begin="0s"
+            fill="freeze"/>
+
+        <animate
+            attributeName="opacity"
+            values="1;1;0;1"
+            dur="0.8s"
+            begin="0s"
+            repeatCount="indefinite"/>
+
+    </rect>
+
+</svg>

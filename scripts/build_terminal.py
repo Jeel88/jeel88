@@ -8,48 +8,90 @@ import re
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-TEMPLATE_FILE = BASE_DIR / "assets" / "svg" / "terminal.svg"
-ASCII_FILE = BASE_DIR / "assets" / "svg" / "ascii.svg"
-OUTPUT_FILE = BASE_DIR / "assets" / "svg" / "profile-terminal.svg"
+TEMPLATE_FILE = (
+    BASE_DIR
+    / "assets"
+    / "svg"
+    / "terminal.svg"
+)
+
+ASCII_FILE = (
+    BASE_DIR
+    / "assets"
+    / "svg"
+    / "ascii.svg"
+)
+
+NAME_FILE = (
+    BASE_DIR
+    / "assets"
+    / "svg"
+    / "name.svg"
+)
+
+OUTPUT_FILE = (
+    BASE_DIR
+    / "assets"
+    / "svg"
+    / "profile-terminal.svg"
+)
 
 
 # ============================================================
-# PORTRAIT POSITION / SIZE
+# PORTRAIT SETTINGS
 # ============================================================
 
 PORTRAIT_X = 45
 PORTRAIT_Y = 205
 
-PORTRAIT_WIDTH = 300
-PORTRAIT_HEIGHT = 330
+PORTRAIT_WIDTH = 360
+PORTRAIT_HEIGHT = 300
+
+
+# ============================================================
+# NAME SETTINGS
+# ============================================================
+
+NAME_X = 520
+NAME_Y = 200
 
 
 # ============================================================
 # CHECK FILES
 # ============================================================
 
-if not TEMPLATE_FILE.exists():
-    raise FileNotFoundError(
-        f"Terminal template not found:\n{TEMPLATE_FILE}"
-    )
+for file in [
+    TEMPLATE_FILE,
+    ASCII_FILE,
+    NAME_FILE
+]:
 
-if not ASCII_FILE.exists():
-    raise FileNotFoundError(
-        f"ASCII SVG not found:\n{ASCII_FILE}\n\n"
-        "Run generate_ascii.py first."
-    )
+    if not file.exists():
+
+        raise FileNotFoundError(
+            f"\nRequired file not found:\n{file}"
+        )
 
 
 # ============================================================
 # READ FILES
 # ============================================================
 
-template = TEMPLATE_FILE.read_text(encoding="utf-8")
-ascii_svg = ASCII_FILE.read_text(encoding="utf-8")
+template = TEMPLATE_FILE.read_text(
+    encoding="utf-8"
+)
+
+ascii_svg = ASCII_FILE.read_text(
+    encoding="utf-8"
+)
+
+name_svg = NAME_FILE.read_text(
+    encoding="utf-8"
+)
 
 
 # ============================================================
-# GET VIEWBOX
+# GET ASCII VIEWBOX
 # ============================================================
 
 viewbox_match = re.search(
@@ -58,8 +100,10 @@ viewbox_match = re.search(
     re.IGNORECASE
 )
 
+
 if viewbox_match:
-    viewbox = viewbox_match.group(1)
+
+    ascii_viewbox = viewbox_match.group(1)
 
 else:
 
@@ -76,56 +120,52 @@ else:
     )
 
     if not width_match or not height_match:
+
         raise ValueError(
-            "Could not determine ASCII SVG dimensions."
+            "Could not determine ASCII SVG size."
         )
 
-    width = width_match.group(1)
-    height = height_match.group(1)
+    ascii_width = width_match.group(1)
+    ascii_height = height_match.group(1)
 
-    viewbox = f"0 0 {width} {height}"
-
-
-# ============================================================
-# GET CONTENT INSIDE ASCII SVG
-# ============================================================
-
-svg_match = re.search(
-    r'<svg\b[^>]*>(.*)</svg>',
-    ascii_svg,
-    re.IGNORECASE | re.DOTALL
-)
-
-if not svg_match:
-    raise ValueError(
-        "Could not read ascii.svg"
+    ascii_viewbox = (
+        f"0 0 {ascii_width} {ascii_height}"
     )
 
-ascii_content = svg_match.group(1)
-
 
 # ============================================================
-# REMOVE ASCII SVG BACKGROUND RECTANGLES
+# EXTRACT SVG CONTENT
 # ============================================================
 
-# Remove common full-size background rectangles.
-ascii_content = re.sub(
-    r'<rect\b[^>]*'
-    r'(?:width\s*=\s*["\'][^"\']+["\'][^>]*'
-    r'height\s*=\s*["\'][^"\']+["\'][^>]*)'
-    r'[^>]*/>',
-    '',
-    ascii_content,
-    flags=re.IGNORECASE
+def extract_svg_content(svg):
+
+    match = re.search(
+        r'<svg\b[^>]*>(.*)</svg>',
+        svg,
+        re.IGNORECASE | re.DOTALL
+    )
+
+    if not match:
+
+        raise ValueError(
+            "Invalid SVG file."
+        )
+
+    return match.group(1)
+
+
+ascii_content = extract_svg_content(
+    ascii_svg
+)
+
+name_content = extract_svg_content(
+    name_svg
 )
 
 
 # ============================================================
-# REMOVE EXTRA CLIP / FILTER DEFINITIONS
+# REMOVE ORIGINAL SVG DEFS
 # ============================================================
-
-# We don't need the ASCII SVG's own outer effects.
-# The main terminal handles the visual design.
 
 ascii_content = re.sub(
     r'<defs\b[^>]*>.*?</defs>',
@@ -136,16 +176,28 @@ ascii_content = re.sub(
 
 
 # ============================================================
-# EMBED ASCII
+# REMOVE ASCII OUTER BACKGROUND
 # ============================================================
 
-embedded_ascii = f"""
+ascii_content = re.sub(
+    r'<rect\b[^>]*/>',
+    '',
+    ascii_content,
+    flags=re.IGNORECASE
+)
+
+
+# ============================================================
+# EMBED PORTRAIT
+# ============================================================
+
+embedded_portrait = f'''
 <svg
     x="{PORTRAIT_X}"
     y="{PORTRAIT_Y}"
     width="{PORTRAIT_WIDTH}"
     height="{PORTRAIT_HEIGHT}"
-    viewBox="{viewbox}"
+    viewBox="{ascii_viewbox}"
     preserveAspectRatio="xMidYMid meet"
     overflow="hidden"
     xmlns="http://www.w3.org/2000/svg">
@@ -153,29 +205,70 @@ embedded_ascii = f"""
     {ascii_content}
 
 </svg>
-"""
+'''
 
 
 # ============================================================
-# FIND PLACEHOLDER
+# EMBED JEEL NAME
 # ============================================================
 
-placeholder = "<!-- PORTRAIT_PLACEHOLDER -->"
+embedded_name = f'''
+<svg
+    x="{NAME_X}"
+    y="{NAME_Y}"
+    width="410"
+    height="100"
+    viewBox="0 0 410 100"
+    overflow="hidden"
+    xmlns="http://www.w3.org/2000/svg">
 
-if placeholder not in template:
+    {name_content}
+
+</svg>
+'''
+
+
+# ============================================================
+# INSERT PORTRAIT
+# ============================================================
+
+portrait_placeholder = (
+    "<!-- PORTRAIT_PLACEHOLDER -->"
+)
+
+if portrait_placeholder not in template:
 
     raise ValueError(
-        "PORTRAIT_PLACEHOLDER not found in terminal.svg"
+        "PORTRAIT_PLACEHOLDER "
+        "not found in terminal.svg"
     )
 
 
+template = template.replace(
+    portrait_placeholder,
+    embedded_portrait
+)
+
+
 # ============================================================
-# INSERT ASCII
+# INSERT NAME
 # ============================================================
 
-result = template.replace(
-    placeholder,
-    embedded_ascii
+name_placeholder = (
+    "<!-- NAME_PLACEHOLDER -->"
+)
+
+if name_placeholder not in template:
+
+    raise ValueError(
+        "NAME_PLACEHOLDER "
+        "not found in terminal.svg"
+    )
+
+
+template = template.replace(
+    name_placeholder,
+    embedded_name
 )
 
 
@@ -184,7 +277,7 @@ result = template.replace(
 # ============================================================
 
 OUTPUT_FILE.write_text(
-    result,
+    template,
     encoding="utf-8"
 )
 
@@ -200,29 +293,32 @@ print("=" * 60)
 
 print()
 
-print(f"Input ASCII : {ASCII_FILE}")
-print(f"Template    : {TEMPLATE_FILE}")
-print(f"Output      : {OUTPUT_FILE}")
+print(f"Portrait : {ASCII_FILE}")
+print(f"Name     : {NAME_FILE}")
+print(f"Template : {TEMPLATE_FILE}")
+print(f"Output   : {OUTPUT_FILE}")
 
 print()
 
 print("Portrait:")
-print(f"  X      = {PORTRAIT_X}px")
-print(f"  Y      = {PORTRAIT_Y}px")
-print(f"  Width  = {PORTRAIT_WIDTH}px")
-print(f"  Height = {PORTRAIT_HEIGHT}px")
+print(
+    f"  {PORTRAIT_WIDTH}px × "
+    f"{PORTRAIT_HEIGHT}px"
+)
 
 print()
 
-print(f"ASCII viewBox = {viewbox}")
+print("JEEL:")
+print("  410px × 100px")
+print("  Left → right typing animation")
 
 print()
 
-print("✓ ASCII scaled")
-print("✓ ASCII centered")
-print("✓ ASCII overflow prevented")
-print("✓ Extra ASCII background removed")
-print("✓ Extra ASCII border removed")
+print("✓ Portrait fitted")
+print("✓ Portrait overflow prevented")
+print("✓ Extra portrait background removed")
+print("✓ JEEL ASCII inserted")
+print("✓ JEEL animation enabled")
 
 print()
 print("=" * 60)
