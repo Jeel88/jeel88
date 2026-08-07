@@ -15,18 +15,16 @@ OUTPUT_FILE = ROOT / "assets" / "svg" / "profile-terminal.svg"
 
 
 # -----------------------------------------
-# Check files
+# Portrait box
 # -----------------------------------------
 
-if not TERMINAL_FILE.exists():
-    raise FileNotFoundError(
-        f"Terminal SVG not found:\n{TERMINAL_FILE}"
-    )
+BOX_X = 45
+BOX_Y = 200
 
-if not ASCII_FILE.exists():
-    raise FileNotFoundError(
-        f"ASCII SVG not found:\n{ASCII_FILE}"
-    )
+BOX_WIDTH = 500
+BOX_HEIGHT = 350
+
+PADDING = 15
 
 
 # -----------------------------------------
@@ -43,7 +41,31 @@ ascii_svg = ASCII_FILE.read_text(
 
 
 # -----------------------------------------
-# Extract the ASCII SVG content
+# Get ASCII dimensions
+# -----------------------------------------
+
+width_match = re.search(
+    r'width="([0-9.]+)"',
+    ascii_svg
+)
+
+height_match = re.search(
+    r'height="([0-9.]+)"',
+    ascii_svg
+)
+
+if not width_match or not height_match:
+    raise ValueError(
+        "Could not determine ASCII SVG dimensions."
+    )
+
+
+ascii_width = float(width_match.group(1))
+ascii_height = float(height_match.group(1))
+
+
+# -----------------------------------------
+# Extract ASCII content
 # -----------------------------------------
 
 match = re.search(
@@ -62,11 +84,43 @@ ascii_content = match.group(1)
 
 
 # -----------------------------------------
-# Create portrait container
+# Calculate automatic scale
+# -----------------------------------------
+
+available_width = BOX_WIDTH - (PADDING * 2)
+available_height = BOX_HEIGHT - (PADDING * 2)
+
+scale_x = available_width / ascii_width
+scale_y = available_height / ascii_height
+
+scale = min(scale_x, scale_y)
+
+
+# -----------------------------------------
+# Center the portrait
+# -----------------------------------------
+
+scaled_width = ascii_width * scale
+scaled_height = ascii_height * scale
+
+offset_x = (
+    BOX_X
+    + (BOX_WIDTH - scaled_width) / 2
+)
+
+offset_y = (
+    BOX_Y
+    + (BOX_HEIGHT - scaled_height) / 2
+)
+
+
+# -----------------------------------------
+# Portrait SVG group
 # -----------------------------------------
 
 portrait = f"""
-<g transform="translate(55 220) scale(0.82)">
+<g
+    transform="translate({offset_x:.2f} {offset_y:.2f}) scale({scale:.4f})">
 
     {ascii_content}
 
@@ -75,18 +129,14 @@ portrait = f"""
 
 
 # -----------------------------------------
-# Add portrait to terminal
+# Replace placeholder
 # -----------------------------------------
 
-marker = """
-<!-- PORTRAIT_PLACEHOLDER -->
-"""
-
+marker = "<!-- PORTRAIT_PLACEHOLDER -->"
 
 if marker not in terminal:
     raise ValueError(
-        "PORTRAIT_PLACEHOLDER not found "
-        "inside terminal.svg"
+        "PORTRAIT_PLACEHOLDER not found in terminal.svg"
     )
 
 
@@ -110,6 +160,8 @@ print("======================================")
 print(" TERMINAL SVG BUILT SUCCESSFULLY")
 print("======================================")
 print()
-print(f"Terminal : {TERMINAL_FILE}")
-print(f"ASCII    : {ASCII_FILE}")
-print(f"Output   : {OUTPUT_FILE}")
+print(f"ASCII size : {ascii_width:.0f} x {ascii_height:.0f}")
+print(f"Scale      : {scale:.4f}")
+print(f"Final size : {scaled_width:.0f} x {scaled_height:.0f}")
+print()
+print(f"Output: {OUTPUT_FILE}")
