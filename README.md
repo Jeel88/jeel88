@@ -1,16 +1,41 @@
-## Hi there 👋
+<div align="center">
 
-<!--
-**Jeel88/jeel88** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
+# 👋 Hi, I'm Jeel Savaliya
 
-Here are some ideas to get you started:
+### • Python • Flutter • AI • Full Stack Developer
 
-- 🔭 I’m currently working on ...
-- 🌱 I’m currently learning ...
-- 👯 I’m looking to collaborate on ...
-- 🤔 I’m looking for help with ...
-- 💬 Ask me about ...
-- 📫 How to reach me: ...
-- 😄 Pronouns: ...
-- ⚡ Fun fact: ...
--->
+---
+
+<img src="./assets/svg/terminal.svg" width="900">
+
+---
+
+</div>
+
+## About Me
+
+```bash
+Last Login : Today
+
+jeel@github % whoami
+```
+
+```text
+Name        : Jeel Savaliya
+Education   : B.Tech Information Technology
+Role        : Flutter Developer
+Learning    : • Python • Flutter • AI • Machine Learning • Cloud
+Dream       : MS in USA 🇺🇸
+```
+
+---
+
+## Projects
+
+🚧 Coming Soon...
+
+---
+
+## GitHub
+
+Coming Soon...
