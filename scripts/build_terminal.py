@@ -2,9 +2,9 @@ from pathlib import Path
 import re
 
 
-# -----------------------------------------
-# Project paths
-# -----------------------------------------
+# =========================================================
+# PATHS
+# =========================================================
 
 ROOT = Path(__file__).resolve().parent.parent
 
@@ -14,22 +14,22 @@ ASCII_FILE = ROOT / "assets" / "svg" / "ascii.svg"
 OUTPUT_FILE = ROOT / "assets" / "svg" / "profile-terminal.svg"
 
 
-# -----------------------------------------
-# Portrait box
-# -----------------------------------------
+# =========================================================
+# PORTRAIT WINDOW
+# =========================================================
 
 BOX_X = 45
-BOX_Y = 200
+BOX_Y = 205
 
 BOX_WIDTH = 500
-BOX_HEIGHT = 350
+BOX_HEIGHT = 335
 
-PADDING = 15
+PADDING = 12
 
 
-# -----------------------------------------
-# Read files
-# -----------------------------------------
+# =========================================================
+# READ SVG FILES
+# =========================================================
 
 terminal = TERMINAL_FILE.read_text(
     encoding="utf-8"
@@ -40,9 +40,9 @@ ascii_svg = ASCII_FILE.read_text(
 )
 
 
-# -----------------------------------------
-# Get ASCII dimensions
-# -----------------------------------------
+# =========================================================
+# GET ASCII SVG DIMENSIONS
+# =========================================================
 
 width_match = re.search(
     r'width="([0-9.]+)"',
@@ -55,18 +55,24 @@ height_match = re.search(
 )
 
 if not width_match or not height_match:
+
     raise ValueError(
         "Could not determine ASCII SVG dimensions."
     )
 
 
-ascii_width = float(width_match.group(1))
-ascii_height = float(height_match.group(1))
+ascii_width = float(
+    width_match.group(1)
+)
+
+ascii_height = float(
+    height_match.group(1)
+)
 
 
-# -----------------------------------------
-# Extract ASCII content
-# -----------------------------------------
+# =========================================================
+# EXTRACT ASCII CONTENT
+# =========================================================
 
 match = re.search(
     r"<g>(.*?)</g>",
@@ -75,6 +81,7 @@ match = re.search(
 )
 
 if not match:
+
     raise ValueError(
         "Could not find ASCII <g> element."
     )
@@ -83,72 +90,120 @@ if not match:
 ascii_content = match.group(1)
 
 
-# -----------------------------------------
-# Calculate automatic scale
-# -----------------------------------------
+# =========================================================
+# AVAILABLE PORTRAIT SPACE
+# =========================================================
 
-available_width = BOX_WIDTH - (PADDING * 2)
-available_height = BOX_HEIGHT - (PADDING * 2)
+available_width = (
+    BOX_WIDTH - PADDING * 2
+)
 
-scale_x = available_width / ascii_width
-scale_y = available_height / ascii_height
+available_height = (
+    BOX_HEIGHT - PADDING * 2
+)
 
-scale = min(scale_x, scale_y)
+
+# =========================================================
+# CALCULATE PROPORTIONAL SCALE
+# =========================================================
+
+scale_x = (
+    available_width / ascii_width
+)
+
+scale_y = (
+    available_height / ascii_height
+)
+
+scale = min(
+    scale_x,
+    scale_y
+)
 
 
-# -----------------------------------------
-# Center the portrait
-# -----------------------------------------
+# =========================================================
+# FINAL SIZE AFTER SCALE
+# =========================================================
 
-scaled_width = ascii_width * scale
-scaled_height = ascii_height * scale
+final_width = (
+    ascii_width * scale
+)
+
+final_height = (
+    ascii_height * scale
+)
+
+
+# =========================================================
+# CENTER ASCII
+# =========================================================
 
 offset_x = (
     BOX_X
-    + (BOX_WIDTH - scaled_width) / 2
+    + (BOX_WIDTH - final_width) / 2
 )
 
 offset_y = (
     BOX_Y
-    + (BOX_HEIGHT - scaled_height) / 2
+    + (BOX_HEIGHT - final_height) / 2
 )
 
 
-# -----------------------------------------
-# Portrait SVG group
-# -----------------------------------------
+# =========================================================
+# INSERT ASCII
+# =========================================================
 
 portrait = f"""
-<g
-    transform="translate({offset_x:.2f} {offset_y:.2f}) scale({scale:.4f})">
+<g clip-path="url(#portraitClip)">
 
-    {ascii_content}
+    <g
+        transform="
+        translate({offset_x:.2f} {offset_y:.2f})
+        scale({scale:.4f})">
+
+        {ascii_content}
+
+    </g>
 
 </g>
 """
 
 
-# -----------------------------------------
-# Replace placeholder
-# -----------------------------------------
+# =========================================================
+# PLACEHOLDER
+# =========================================================
 
-marker = "<!-- PORTRAIT_PLACEHOLDER -->"
+placeholder = (
+    "<!-- PORTRAIT_PLACEHOLDER -->"
+)
 
-if marker not in terminal:
+
+if placeholder not in terminal:
+
     raise ValueError(
-        "PORTRAIT_PLACEHOLDER not found in terminal.svg"
+        "PORTRAIT_PLACEHOLDER is missing "
+        "from terminal.svg"
     )
 
 
+# =========================================================
+# BUILD FINAL SVG
+# =========================================================
+
 final_svg = terminal.replace(
-    marker,
+    placeholder,
     portrait
 )
 
 
-# -----------------------------------------
-# Save
-# -----------------------------------------
+# =========================================================
+# SAVE
+# =========================================================
+
+OUTPUT_FILE.parent.mkdir(
+    parents=True,
+    exist_ok=True
+)
 
 OUTPUT_FILE.write_text(
     final_svg,
@@ -156,12 +211,38 @@ OUTPUT_FILE.write_text(
 )
 
 
+# =========================================================
+# RESULT
+# =========================================================
+
+print()
 print("======================================")
-print(" TERMINAL SVG BUILT SUCCESSFULLY")
+print(" GLASS TERMINAL GENERATED")
 print("======================================")
 print()
-print(f"ASCII size : {ascii_width:.0f} x {ascii_height:.0f}")
-print(f"Scale      : {scale:.4f}")
-print(f"Final size : {scaled_width:.0f} x {scaled_height:.0f}")
+
+print(
+    f"ASCII size : "
+    f"{ascii_width:.0f} × "
+    f"{ascii_height:.0f}px"
+)
+
+print(
+    f"Scale      : "
+    f"{scale:.4f}"
+)
+
+print(
+    f"Final size : "
+    f"{final_width:.0f} × "
+    f"{final_height:.0f}px"
+)
+
 print()
-print(f"Output: {OUTPUT_FILE}")
+
+print(
+    f"Output     : "
+    f"{OUTPUT_FILE}"
+)
+
+print()

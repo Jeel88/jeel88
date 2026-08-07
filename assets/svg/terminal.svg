@@ -6,7 +6,10 @@
 
     <defs>
 
-        <!-- Glass background -->
+        <!-- ================================= -->
+        <!-- GLASS BACKGROUND -->
+        <!-- ================================= -->
+
         <linearGradient
             id="glass"
             x1="0"
@@ -24,14 +27,17 @@
 
         </linearGradient>
 
-        <!-- Soft glow -->
-        <radialGradient
-            id="glow">
+
+        <!-- ================================= -->
+        <!-- SOFT BLUE GLOW -->
+        <!-- ================================= -->
+
+        <radialGradient id="glow">
 
             <stop
                 offset="0%"
                 stop-color="#38bdf8"
-                stop-opacity="0.15"/>
+                stop-opacity="0.14"/>
 
             <stop
                 offset="100%"
@@ -40,7 +46,11 @@
 
         </radialGradient>
 
-        <!-- Shadow -->
+
+        <!-- ================================= -->
+        <!-- WINDOW SHADOW -->
+        <!-- ================================= -->
+
         <filter id="shadow">
 
             <feDropShadow
@@ -51,10 +61,28 @@
 
         </filter>
 
+
+        <!-- ================================= -->
+        <!-- PORTRAIT CLIPPING -->
+        <!-- ================================= -->
+
+        <clipPath id="portraitClip">
+
+            <rect
+                x="45"
+                y="205"
+                width="500"
+                height="335"
+                rx="16"/>
+
+        </clipPath>
+
     </defs>
 
 
-    <!-- Glass window -->
+    <!-- ===================================== -->
+    <!-- GLASS WINDOW -->
+    <!-- ===================================== -->
 
     <rect
         x="20"
@@ -68,7 +96,9 @@
         filter="url(#shadow)"/>
 
 
-    <!-- Background glow -->
+    <!-- ===================================== -->
+    <!-- BACKGROUND GLOW -->
+    <!-- ===================================== -->
 
     <ellipse
         cx="500"
@@ -78,7 +108,9 @@
         fill="url(#glow)"/>
 
 
-    <!-- macOS buttons -->
+    <!-- ===================================== -->
+    <!-- macOS TRAFFIC LIGHTS -->
+    <!-- ===================================== -->
 
     <circle
         cx="55"
@@ -99,7 +131,9 @@
         fill="#28c840"/>
 
 
-    <!-- Window title -->
+    <!-- ===================================== -->
+    <!-- WINDOW TITLE -->
+    <!-- ===================================== -->
 
     <text
         x="500"
@@ -114,7 +148,9 @@
     </text>
 
 
-    <!-- Divider -->
+    <!-- ===================================== -->
+    <!-- DIVIDER -->
+    <!-- ===================================== -->
 
     <line
         x1="20"
@@ -124,7 +160,9 @@
         stroke="#334155"/>
 
 
-    <!-- Terminal command -->
+    <!-- ===================================== -->
+    <!-- TERMINAL HEADER -->
+    <!-- ===================================== -->
 
     <text
         x="50"
@@ -138,6 +176,8 @@
     </text>
 
 
+    <!-- COMMAND PROMPT -->
+
     <text
         x="50"
         y="170"
@@ -149,6 +189,8 @@
 
     </text>
 
+
+    <!-- COMMAND -->
 
     <text
         x="220"
@@ -162,53 +204,51 @@
     </text>
 
 
-    <!-- Portrait -->
+    <!-- ===================================== -->
+    <!-- PORTRAIT PANEL -->
+    <!-- ===================================== -->
 
     <rect
         x="45"
-        y="200"
+        y="205"
         width="500"
-        height="350"
+        height="335"
         rx="16"
         fill="#020617"
-        opacity="0.45"/>
+        opacity="0.55"/>
 
 
-<!-- PORTRAIT_PLACEHOLDER -->
-<!-- Portrait -->
+    <!-- ===================================== -->
+    <!-- PORTRAIT INNER BORDER -->
+    <!-- ===================================== -->
 
-<rect
-    x="45"
-    y="200"
-    width="500"
-    height="350"
-    rx="16"
-    fill="#020617"
-    opacity="0.45"/>
+    <rect
+        x="45"
+        y="205"
+        width="500"
+        height="335"
+        rx="16"
+        fill="none"
+        stroke="#1e293b"
+        stroke-width="1"/>
 
-<!-- PORTRAIT_PLACEHOLDER -->
+
+    <!-- ===================================== -->
+    <!-- ASCII PORTRAIT -->
+    <!-- ===================================== -->
+
+    <!-- PORTRAIT_PLACEHOLDER -->
 
 
-<!-- Right information -->
-
-<text
-    x="590"
-    y="240"
-    fill="#38bdf8"
-    font-size="18"
-    font-family="monospace">
-
-    Jeel Savaliya
-
-</text>
-
-    <!-- Right information -->
+    <!-- ===================================== -->
+    <!-- RIGHT INFORMATION -->
+    <!-- ===================================== -->
 
     <text
         x="590"
         y="240"
         fill="#38bdf8"
-        font-size="18"
+        font-size="22"
         font-family="monospace">
 
         Jeel Savaliya
@@ -216,11 +256,13 @@
     </text>
 
 
+    <!-- ROLE 1 -->
+
     <text
         x="590"
-        y="275"
+        y="280"
         fill="#e2e8f0"
-        font-size="15"
+        font-size="16"
         font-family="monospace">
 
         Python Developer
@@ -228,11 +270,13 @@
     </text>
 
 
+    <!-- ROLE 2 -->
+
     <text
         x="590"
-        y="305"
+        y="312"
         fill="#e2e8f0"
-        font-size="15"
+        font-size="16"
         font-family="monospace">
 
         Flutter Developer
@@ -240,11 +284,13 @@
     </text>
 
 
+    <!-- ROLE 3 -->
+
     <text
         x="590"
-        y="335"
+        y="344"
         fill="#e2e8f0"
-        font-size="15"
+        font-size="16"
         font-family="monospace">
 
         AI Builder
@@ -252,9 +298,23 @@
     </text>
 
 
+    <!-- ===================================== -->
+    <!-- INFORMATION DIVIDER -->
+    <!-- ===================================== -->
+
+    <line
+        x1="590"
+        y1="375"
+        x2="930"
+        y2="375"
+        stroke="#334155"/>
+
+
+    <!-- GITHUB -->
+
     <text
         x="590"
-        y="385"
+        y="410"
         fill="#64748b"
         font-size="14"
         font-family="monospace">
@@ -264,11 +324,39 @@
     </text>
 
 
-    <!-- Cursor -->
+    <!-- DESCRIPTION -->
+
+    <text
+        x="590"
+        y="440"
+        fill="#64748b"
+        font-size="14"
+        font-family="monospace">
+
+        Building things with Python
+
+    </text>
+
+
+    <text
+        x="590"
+        y="470"
+        fill="#64748b"
+        font-size="14"
+        font-family="monospace">
+
+        and Flutter.
+
+    </text>
+
+
+    <!-- ===================================== -->
+    <!-- TERMINAL CURSOR -->
+    <!-- ===================================== -->
 
     <rect
         x="50"
-        y="575"
+        y="570"
         width="10"
         height="18"
         fill="#38bdf8">
@@ -280,5 +368,6 @@
             repeatCount="indefinite"/>
 
     </rect>
+
 
 </svg>

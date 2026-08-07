@@ -1,5 +1,5 @@
 from pathlib import Path
-from PIL import Image, ImageOps
+from PIL import Image, ImageOps, ImageEnhance, ImageFilter
 import html
 
 
@@ -17,24 +17,34 @@ OUTPUT = ROOT / "assets" / "svg" / "ascii.svg"
 # ASCII SETTINGS
 # =========================================================
 
-# Number of characters across.
-# 55 works nicely inside our terminal.
-COLUMNS = 55
+COLUMNS = 110
 
-# Characters go from dark -> bright.
-ASCII_CHARS = "@%#*+=-:. "
+ASCII_CHARS = "-:.=+*#%@"
 
-# White ASCII for the glass terminal.
 TEXT_COLOR = "#FFFFFF"
 
-# Font size inside SVG.
-FONT_SIZE = 7
+FONT_SIZE = 5
+LINE_HEIGHT = 6
 
-# Character height.
-LINE_HEIGHT = 7
-
-# SVG padding.
 PADDING = 10
+
+BRIGHTNESS = 1.35
+CONTRAST = 1.6
+SHARPNESS = 1.2
+
+
+# =========================================================
+# IMAGE ADJUSTMENT
+# =========================================================
+
+# Brightness
+BRIGHTNESS = 1.65
+
+# Contrast
+CONTRAST = 1.45
+
+# Sharpness
+SHARPNESS = 1.35
 
 
 # =========================================================
@@ -43,9 +53,7 @@ PADDING = 10
 
 if not PHOTO.exists():
     raise FileNotFoundError(
-        f"\nPhoto not found:\n{PHOTO}\n\n"
-        "Put your photo at:\n"
-        "photo/profile.jpg"
+        f"Photo not found:\n{PHOTO}"
     )
 
 
@@ -55,8 +63,45 @@ if not PHOTO.exists():
 
 image = Image.open(PHOTO)
 
-# Convert to grayscale.
+# Convert to grayscale
 image = ImageOps.grayscale(image)
+
+
+# =========================================================
+# BRIGHTEN DARK PHOTO
+# =========================================================
+
+image = ImageEnhance.Brightness(
+    image
+).enhance(BRIGHTNESS)
+
+
+# =========================================================
+# INCREASE CONTRAST
+# =========================================================
+
+image = ImageEnhance.Contrast(
+    image
+).enhance(CONTRAST)
+
+
+# =========================================================
+# SHARPEN
+# =========================================================
+
+image = ImageEnhance.Sharpness(
+    image
+).enhance(SHARPNESS)
+
+
+# =========================================================
+# AUTO-CONTRAST
+# =========================================================
+
+image = ImageOps.autocontrast(
+    image,
+    cutoff=2
+)
 
 
 # =========================================================
@@ -65,29 +110,35 @@ image = ImageOps.grayscale(image)
 
 original_width, original_height = image.size
 
-aspect_ratio = original_height / original_width
+aspect_ratio = (
+    original_height / original_width
+)
 
-# Characters are taller than they are wide,
-# so compensate for terminal character proportions.
 CHARACTER_RATIO = 0.5
 
 rows = max(
     1,
-    int(COLUMNS * aspect_ratio * CHARACTER_RATIO)
+    int(
+        COLUMNS
+        * aspect_ratio
+        * CHARACTER_RATIO
+    )
 )
 
 image = image.resize(
-    (COLUMNS, rows)
+    (COLUMNS, rows),
+    Image.Resampling.LANCZOS
 )
 
 
 # =========================================================
-# CONVERT IMAGE → ASCII
+# ASCII CONVERSION
 # =========================================================
 
 pixels = list(image.getdata())
 
 ascii_lines = []
+
 
 for row in range(rows):
 
@@ -99,7 +150,7 @@ for row in range(rows):
             row * COLUMNS + column
         ]
 
-        # Convert brightness to ASCII character.
+        # Brightness → ASCII character
         index = int(
             pixel
             / 255
@@ -116,12 +167,15 @@ for row in range(rows):
 # =========================================================
 
 svg_width = (
-    COLUMNS * FONT_SIZE * 0.62
+    COLUMNS
+    * FONT_SIZE
+    * 0.62
     + PADDING * 2
 )
 
 svg_height = (
-    rows * LINE_HEIGHT
+    rows
+    * LINE_HEIGHT
     + PADDING * 2
 )
 
@@ -148,8 +202,12 @@ xml:space="preserve">
         monospace;
 
     font-size: {FONT_SIZE}px;
-    font-weight: 600;
+
+    font-weight: 700;
+
     fill: {TEXT_COLOR};
+
+    letter-spacing: 0px;
 }}
 
 </style>
@@ -159,12 +217,11 @@ xml:space="preserve">
 
 
 # =========================================================
-# ADD ASCII LINES
+# ADD ASCII
 # =========================================================
 
 for index, line in enumerate(ascii_lines):
 
-    # Escape XML characters.
     safe_line = html.escape(line)
 
     y = (
@@ -194,7 +251,7 @@ svg += """
 
 
 # =========================================================
-# WRITE FILE
+# SAVE
 # =========================================================
 
 OUTPUT.parent.mkdir(
@@ -209,18 +266,20 @@ OUTPUT.write_text(
 
 
 # =========================================================
-# RESULT
+# OUTPUT
 # =========================================================
 
 print()
 print("======================================")
-print(" ASCII PORTRAIT GENERATED")
+print(" BRIGHT ASCII PORTRAIT GENERATED")
 print("======================================")
 print()
-print(f"Photo      : {PHOTO}")
-print(f"Characters : {COLUMNS} columns")
-print(f"Rows       : {rows}")
-print(f"SVG size   : {svg_width:.0f} x {svg_height:.0f}px")
-print(f"Color      : {TEXT_COLOR}")
-print(f"Output     : {OUTPUT}")
+print(f"Columns   : {COLUMNS}")
+print(f"Rows      : {rows}")
+print(f"Brightness: {BRIGHTNESS}")
+print(f"Contrast  : {CONTRAST}")
+print(f"Sharpness : {SHARPNESS}")
+print(f"Color     : {TEXT_COLOR}")
+print()
+print(f"Output: {OUTPUT}")
 print()
