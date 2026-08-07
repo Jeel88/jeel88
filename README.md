@@ -6,7 +6,7 @@
 
 ---
 
-<img src="./assets/svg/terminal.svg" width="900">
+<img src="./assets/svg/terminal.svg" width="1000"/>
 
 ---
 
