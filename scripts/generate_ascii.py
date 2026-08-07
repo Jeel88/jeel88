@@ -1,90 +1,140 @@
 from pathlib import Path
+from PIL import Image, ImageOps
 import html
 
 
-# -----------------------------------------
-# Project paths
-# -----------------------------------------
+# =========================================================
+# PATHS
+# =========================================================
 
 ROOT = Path(__file__).resolve().parent.parent
 
-INPUT_FILE = ROOT / "assets" / "ascii" / "portrait.txt"
-OUTPUT_FILE = ROOT / "assets" / "svg" / "ascii.svg"
+PHOTO = ROOT / "photo" / "profile.jpg"
+OUTPUT = ROOT / "assets" / "svg" / "ascii.svg"
 
 
-# -----------------------------------------
-# Configuration
-# -----------------------------------------
+# =========================================================
+# ASCII SETTINGS
+# =========================================================
 
-FONT_SIZE = 8
-LINE_HEIGHT = 9
+# Number of characters across.
+# 55 works nicely inside our terminal.
+COLUMNS = 55
 
-TEXT_COLOR = "#E5E7EB"
+# Characters go from dark -> bright.
+ASCII_CHARS = "@%#*+=-:. "
 
-PADDING = 20
+# White ASCII for the glass terminal.
+TEXT_COLOR = "#FFFFFF"
+
+# Font size inside SVG.
+FONT_SIZE = 7
+
+# Character height.
+LINE_HEIGHT = 7
+
+# SVG padding.
+PADDING = 10
 
 
-# -----------------------------------------
-# Check input
-# -----------------------------------------
+# =========================================================
+# CHECK PHOTO
+# =========================================================
 
-if not INPUT_FILE.exists():
+if not PHOTO.exists():
     raise FileNotFoundError(
-        f"ASCII file not found:\n{INPUT_FILE}"
+        f"\nPhoto not found:\n{PHOTO}\n\n"
+        "Put your photo at:\n"
+        "photo/profile.jpg"
     )
 
 
-# -----------------------------------------
-# Read ASCII
-# -----------------------------------------
+# =========================================================
+# LOAD IMAGE
+# =========================================================
 
-ascii_art = INPUT_FILE.read_text(
-    encoding="utf-8"
+image = Image.open(PHOTO)
+
+# Convert to grayscale.
+image = ImageOps.grayscale(image)
+
+
+# =========================================================
+# RESIZE
+# =========================================================
+
+original_width, original_height = image.size
+
+aspect_ratio = original_height / original_width
+
+# Characters are taller than they are wide,
+# so compensate for terminal character proportions.
+CHARACTER_RATIO = 0.5
+
+rows = max(
+    1,
+    int(COLUMNS * aspect_ratio * CHARACTER_RATIO)
 )
 
-ascii_art = ascii_art.replace("\r\n", "\n")
-
-# Remove accidental escaped asterisks.
-ascii_art = ascii_art.replace(r"\*", "*")
-
-# Remove accidental escaped backslashes.
-ascii_art = ascii_art.replace(r"\\", "\\")
-
-# Remove empty lines at the beginning/end.
-ascii_art = ascii_art.strip("\n")
-
-lines = ascii_art.split("\n")
-
-
-# -----------------------------------------
-# Calculate dimensions
-# -----------------------------------------
-
-max_width = max(
-    len(line)
-    for line in lines
+image = image.resize(
+    (COLUMNS, rows)
 )
 
-width = (
-    max_width * FONT_SIZE * 0.60
+
+# =========================================================
+# CONVERT IMAGE → ASCII
+# =========================================================
+
+pixels = list(image.getdata())
+
+ascii_lines = []
+
+for row in range(rows):
+
+    line = ""
+
+    for column in range(COLUMNS):
+
+        pixel = pixels[
+            row * COLUMNS + column
+        ]
+
+        # Convert brightness to ASCII character.
+        index = int(
+            pixel
+            / 255
+            * (len(ASCII_CHARS) - 1)
+        )
+
+        line += ASCII_CHARS[index]
+
+    ascii_lines.append(line)
+
+
+# =========================================================
+# SVG DIMENSIONS
+# =========================================================
+
+svg_width = (
+    COLUMNS * FONT_SIZE * 0.62
     + PADDING * 2
 )
 
-height = (
-    len(lines) * LINE_HEIGHT
+svg_height = (
+    rows * LINE_HEIGHT
     + PADDING * 2
 )
 
 
-# -----------------------------------------
-# Start SVG
-# -----------------------------------------
+# =========================================================
+# CREATE SVG
+# =========================================================
 
 svg = f'''<svg
 xmlns="http://www.w3.org/2000/svg"
-width="{width:.0f}"
-height="{height:.0f}"
-viewBox="0 0 {width:.0f} {height:.0f}"
+width="{svg_width:.0f}"
+height="{svg_height:.0f}"
+viewBox="0 0 {svg_width:.0f} {svg_height:.0f}"
 xml:space="preserve">
 
 <style>
@@ -98,29 +148,8 @@ xml:space="preserve">
         monospace;
 
     font-size: {FONT_SIZE}px;
+    font-weight: 600;
     fill: {TEXT_COLOR};
-
-    opacity: 0;
-
-    animation:
-        reveal
-        0.5s
-        ease-out
-        forwards;
-}}
-
-@keyframes reveal {{
-
-    from {{
-        opacity: 0;
-        transform: translateX(-6px);
-    }}
-
-    to {{
-        opacity: 1;
-        transform: translateX(0);
-    }}
-
 }}
 
 </style>
@@ -129,12 +158,13 @@ xml:space="preserve">
 '''
 
 
-# -----------------------------------------
-# Generate each ASCII line
-# -----------------------------------------
+# =========================================================
+# ADD ASCII LINES
+# =========================================================
 
-for index, line in enumerate(lines):
+for index, line in enumerate(ascii_lines):
 
+    # Escape XML characters.
     safe_line = html.escape(line)
 
     y = (
@@ -143,21 +173,19 @@ for index, line in enumerate(lines):
         + index * LINE_HEIGHT
     )
 
-    delay = index * 0.025
-
     svg += f'''
 <text
     class="ascii"
     x="{PADDING}"
-    y="{y:.0f}"
-    style="animation-delay:{delay:.3f}s"
->{safe_line}</text>
+    y="{y}">
+    {safe_line}
+</text>
 '''
 
 
-# -----------------------------------------
-# Close SVG
-# -----------------------------------------
+# =========================================================
+# CLOSE SVG
+# =========================================================
 
 svg += """
 </g>
@@ -165,27 +193,34 @@ svg += """
 """
 
 
-# -----------------------------------------
-# Save
-# -----------------------------------------
+# =========================================================
+# WRITE FILE
+# =========================================================
 
-OUTPUT_FILE.parent.mkdir(
+OUTPUT.parent.mkdir(
     parents=True,
     exist_ok=True
 )
 
-OUTPUT_FILE.write_text(
+OUTPUT.write_text(
     svg,
     encoding="utf-8"
 )
 
 
-print("======================================")
-print(" ASCII SVG GENERATED SUCCESSFULLY")
-print("======================================")
-print(f"Lines : {len(lines)}")
-print(f"Width : {width:.0f}px")
-print(f"Height: {height:.0f}px")
+# =========================================================
+# RESULT
+# =========================================================
+
 print()
-print(f"Input : {INPUT_FILE}")
-print(f"Output: {OUTPUT_FILE}")
+print("======================================")
+print(" ASCII PORTRAIT GENERATED")
+print("======================================")
+print()
+print(f"Photo      : {PHOTO}")
+print(f"Characters : {COLUMNS} columns")
+print(f"Rows       : {rows}")
+print(f"SVG size   : {svg_width:.0f} x {svg_height:.0f}px")
+print(f"Color      : {TEXT_COLOR}")
+print(f"Output     : {OUTPUT}")
+print()
