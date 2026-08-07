@@ -6,7 +6,15 @@
 
 ---
 
-<img src="./assets/svg/terminal.svg" width="1000"/>
+<div align="center">
+
+<img
+    src="./assets/svg/profile-terminal.svg"
+    width="1000"
+    alt="Jeel Savaliya terminal profile"
+/>
+
+</div>
 
 ---
 

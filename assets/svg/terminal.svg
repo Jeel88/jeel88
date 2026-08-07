@@ -1,86 +1,259 @@
-<svg width="1000" height="520"
-viewBox="0 0 1000 520"
-xmlns="http://www.w3.org/2000/svg">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="1000"
+    height="620"
+    viewBox="0 0 1000 620">
 
-  <defs>
+    <defs>
 
-    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#111827"/>
-      <stop offset="100%" stop-color="#1E293B"/>
-    </linearGradient>
+        <!-- Glass background -->
+        <linearGradient
+            id="glass"
+            x1="0"
+            y1="0"
+            x2="1"
+            y2="1">
 
-    <filter id="shadow">
-      <feDropShadow dx="0" dy="8" stdDeviation="12"
-      flood-color="#000"
-      flood-opacity="0.35"/>
-    </filter>
+            <stop
+                offset="0%"
+                stop-color="#111827"/>
 
-  </defs>
+            <stop
+                offset="100%"
+                stop-color="#020617"/>
 
-  <rect
-      x="30"
-      y="30"
-      width="940"
-      height="460"
-      rx="24"
-      fill="url(#bg)"
-      stroke="#334155"
-      filter="url(#shadow)"
-  />
+        </linearGradient>
 
-  <circle cx="65" cy="60" r="8" fill="#ff5f57"/>
-  <circle cx="90" cy="60" r="8" fill="#febc2e"/>
-  <circle cx="115" cy="60" r="8" fill="#28c840"/>
+        <!-- Soft glow -->
+        <radialGradient
+            id="glow">
 
-  <text
-      x="150"
-      y="66"
-      fill="#cbd5e1"
-      font-family="SF Mono, Consolas, monospace"
-      font-size="18">
+            <stop
+                offset="0%"
+                stop-color="#38bdf8"
+                stop-opacity="0.15"/>
 
-      Jeel Terminal
+            <stop
+                offset="100%"
+                stop-color="#38bdf8"
+                stop-opacity="0"/>
 
-  </text>
+        </radialGradient>
 
-  <line
-      x1="30"
-      y1="85"
-      x2="970"
-      y2="85"
-      stroke="#334155"/>
+        <!-- Shadow -->
+        <filter id="shadow">
 
-  <text
-      x="55"
-      y="120"
-      fill="#94A3B8"
-      font-size="16"
-      font-family="SF Mono, monospace">
+            <feDropShadow
+                dx="0"
+                dy="15"
+                stdDeviation="20"
+                flood-opacity="0.35"/>
 
-      Last login: Today on github
+        </filter>
 
-  </text>
+    </defs>
 
-  <text
-      x="55"
-      y="165"
-      fill="#E2E8F0"
-      font-size="22"
-      font-family="SF Mono, monospace">
 
-      jeel@github %
+    <!-- Glass window -->
 
-  </text>
+    <rect
+        x="20"
+        y="20"
+        width="960"
+        height="580"
+        rx="24"
+        fill="url(#glass)"
+        stroke="#334155"
+        stroke-width="1"
+        filter="url(#shadow)"/>
 
-  <text
-      x="250"
-      y="165"
-      fill="#38BDF8"
-      font-size="22"
-      font-family="SF Mono, monospace">
 
-      whoami
+    <!-- Background glow -->
 
-  </text>
+    <ellipse
+        cx="500"
+        cy="300"
+        rx="420"
+        ry="260"
+        fill="url(#glow)"/>
+
+
+    <!-- macOS buttons -->
+
+    <circle
+        cx="55"
+        cy="55"
+        r="8"
+        fill="#ff5f57"/>
+
+    <circle
+        cx="80"
+        cy="55"
+        r="8"
+        fill="#febc2e"/>
+
+    <circle
+        cx="105"
+        cy="55"
+        r="8"
+        fill="#28c840"/>
+
+
+    <!-- Window title -->
+
+    <text
+        x="500"
+        y="61"
+        text-anchor="middle"
+        fill="#94a3b8"
+        font-size="16"
+        font-family="monospace">
+
+        jeel@github — zsh
+
+    </text>
+
+
+    <!-- Divider -->
+
+    <line
+        x1="20"
+        y1="90"
+        x2="980"
+        y2="90"
+        stroke="#334155"/>
+
+
+    <!-- Terminal command -->
+
+    <text
+        x="50"
+        y="130"
+        fill="#64748b"
+        font-size="15"
+        font-family="monospace">
+
+        Last login: today on github
+
+    </text>
+
+
+    <text
+        x="50"
+        y="170"
+        fill="#e2e8f0"
+        font-size="20"
+        font-family="monospace">
+
+        jeel@github %
+
+    </text>
+
+
+    <text
+        x="220"
+        y="170"
+        fill="#38bdf8"
+        font-size="20"
+        font-family="monospace">
+
+        whoami
+
+    </text>
+
+
+    <!-- Portrait -->
+
+    <rect
+        x="45"
+        y="200"
+        width="500"
+        height="350"
+        rx="16"
+        fill="#020617"
+        opacity="0.45"/>
+
+
+<!-- PORTRAIT_PLACEHOLDER -->
+
+
+    <!-- Right information -->
+
+    <text
+        x="590"
+        y="240"
+        fill="#38bdf8"
+        font-size="18"
+        font-family="monospace">
+
+        Jeel Savaliya
+
+    </text>
+
+
+    <text
+        x="590"
+        y="275"
+        fill="#e2e8f0"
+        font-size="15"
+        font-family="monospace">
+
+        Python Developer
+
+    </text>
+
+
+    <text
+        x="590"
+        y="305"
+        fill="#e2e8f0"
+        font-size="15"
+        font-family="monospace">
+
+        Flutter Developer
+
+    </text>
+
+
+    <text
+        x="590"
+        y="335"
+        fill="#e2e8f0"
+        font-size="15"
+        font-family="monospace">
+
+        AI Builder
+
+    </text>
+
+
+    <text
+        x="590"
+        y="385"
+        fill="#64748b"
+        font-size="14"
+        font-family="monospace">
+
+        github.com/Jeel88
+
+    </text>
+
+
+    <!-- Cursor -->
+
+    <rect
+        x="50"
+        y="575"
+        width="10"
+        height="18"
+        fill="#38bdf8">
+
+        <animate
+            attributeName="opacity"
+            values="1;0;1"
+            dur="1s"
+            repeatCount="indefinite"/>
+
+    </rect>
 
 </svg>

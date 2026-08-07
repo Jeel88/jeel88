@@ -3,7 +3,7 @@ import html
 
 
 # -----------------------------------------
-# Paths
+# Project paths
 # -----------------------------------------
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -16,29 +16,42 @@ OUTPUT_FILE = ROOT / "assets" / "svg" / "ascii.svg"
 # Configuration
 # -----------------------------------------
 
-FONT_SIZE = 10
-LINE_HEIGHT = 12
+FONT_SIZE = 8
+LINE_HEIGHT = 9
 
 TEXT_COLOR = "#E5E7EB"
-BACKGROUND = "transparent"
 
 PADDING = 20
+
+
+# -----------------------------------------
+# Check input
+# -----------------------------------------
+
+if not INPUT_FILE.exists():
+    raise FileNotFoundError(
+        f"ASCII file not found:\n{INPUT_FILE}"
+    )
 
 
 # -----------------------------------------
 # Read ASCII
 # -----------------------------------------
 
-if not INPUT_FILE.exists():
-    raise FileNotFoundError(
-        f"Could not find ASCII file: {INPUT_FILE}"
-    )
-
-
 ascii_art = INPUT_FILE.read_text(
     encoding="utf-8"
-).replace("\r\n", "\n").rstrip("\n")
+)
 
+ascii_art = ascii_art.replace("\r\n", "\n")
+
+# Remove accidental escaped asterisks.
+ascii_art = ascii_art.replace(r"\*", "*")
+
+# Remove accidental escaped backslashes.
+ascii_art = ascii_art.replace(r"\\", "\\")
+
+# Remove empty lines at the beginning/end.
+ascii_art = ascii_art.strip("\n")
 
 lines = ascii_art.split("\n")
 
@@ -48,8 +61,13 @@ lines = ascii_art.split("\n")
 # -----------------------------------------
 
 max_width = max(
-    (len(line) for line in lines),
-    default=1
+    len(line)
+    for line in lines
+)
+
+width = (
+    max_width * FONT_SIZE * 0.60
+    + PADDING * 2
 )
 
 height = (
@@ -57,31 +75,24 @@ height = (
     + PADDING * 2
 )
 
-width = (
-    max_width * (FONT_SIZE * 0.62)
-    + PADDING * 2
-)
-
 
 # -----------------------------------------
-# Generate SVG
+# Start SVG
 # -----------------------------------------
 
-svg = []
-
-svg.append(
-    f'''<svg
+svg = f'''<svg
 xmlns="http://www.w3.org/2000/svg"
 width="{width:.0f}"
-height="{height}"
-viewBox="0 0 {width:.0f} {height}">
+height="{height:.0f}"
+viewBox="0 0 {width:.0f} {height:.0f}"
+xml:space="preserve">
 
 <style>
 
 .ascii {{
     font-family:
         "SFMono-Regular",
-        "Cascadia Code",
+        "Cascadia Mono",
         "JetBrains Mono",
         Consolas,
         monospace;
@@ -89,16 +100,37 @@ viewBox="0 0 {width:.0f} {height}">
     font-size: {FONT_SIZE}px;
     fill: {TEXT_COLOR};
 
-    white-space: pre;
+    opacity: 0;
+
+    animation:
+        reveal
+        0.5s
+        ease-out
+        forwards;
+}}
+
+@keyframes reveal {{
+
+    from {{
+        opacity: 0;
+        transform: translateX(-6px);
+    }}
+
+    to {{
+        opacity: 1;
+        transform: translateX(0);
+    }}
+
 }}
 
 </style>
+
+<g>
 '''
-)
 
 
 # -----------------------------------------
-# Add ASCII lines
+# Generate each ASCII line
 # -----------------------------------------
 
 for index, line in enumerate(lines):
@@ -111,64 +143,30 @@ for index, line in enumerate(lines):
         + index * LINE_HEIGHT
     )
 
-    delay = index * 0.035
+    delay = index * 0.025
 
-    svg.append(
-        f'''
+    svg += f'''
 <text
-class="ascii"
-x="{PADDING}"
-y="{y}"
-style="animation-delay:{delay:.3f}s">
-
-{safe_line}
-
-</text>
+    class="ascii"
+    x="{PADDING}"
+    y="{y:.0f}"
+    style="animation-delay:{delay:.3f}s"
+>{safe_line}</text>
 '''
-    )
 
 
 # -----------------------------------------
-# Animation
+# Close SVG
 # -----------------------------------------
 
-svg.append(
-    '''
-<style>
-
-.ascii {
-    opacity: 0;
-    animation:
-        reveal
-        0.4s
-        ease-out
-        forwards;
-}
-
-@keyframes reveal {
-
-    from {
-        opacity: 0;
-        transform: translateX(-8px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateX(0);
-    }
-
-}
-
-</style>
-'''
-)
-
-
-svg.append("</svg>")
+svg += """
+</g>
+</svg>
+"""
 
 
 # -----------------------------------------
-# Write SVG
+# Save
 # -----------------------------------------
 
 OUTPUT_FILE.parent.mkdir(
@@ -177,11 +175,17 @@ OUTPUT_FILE.parent.mkdir(
 )
 
 OUTPUT_FILE.write_text(
-    "".join(svg),
+    svg,
     encoding="utf-8"
 )
 
 
-print("ASCII SVG generated successfully.")
+print("======================================")
+print(" ASCII SVG GENERATED SUCCESSFULLY")
+print("======================================")
+print(f"Lines : {len(lines)}")
+print(f"Width : {width:.0f}px")
+print(f"Height: {height:.0f}px")
+print()
 print(f"Input : {INPUT_FILE}")
 print(f"Output: {OUTPUT_FILE}")
