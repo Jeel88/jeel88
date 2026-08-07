@@ -2,269 +2,227 @@ from pathlib import Path
 import re
 
 
-# =========================================================
+# ============================================================
 # PATHS
-# =========================================================
+# ============================================================
 
-ROOT = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent
 
-TERMINAL_FILE = (
-    ROOT
-    / "assets"
-    / "svg"
-    / "terminal.svg"
-)
-
-ASCII_FILE = (
-    ROOT
-    / "assets"
-    / "svg"
-    / "ascii.svg"
-)
-
-OUTPUT_FILE = (
-    ROOT
-    / "assets"
-    / "svg"
-    / "profile-terminal.svg"
-)
+TEMPLATE_FILE = BASE_DIR / "assets" / "svg" / "terminal.svg"
+ASCII_FILE = BASE_DIR / "assets" / "svg" / "ascii.svg"
+OUTPUT_FILE = BASE_DIR / "assets" / "svg" / "profile-terminal.svg"
 
 
-# =========================================================
-# PORTRAIT BOX
-# =========================================================
+# ============================================================
+# PORTRAIT POSITION / SIZE
+# ============================================================
 
 PORTRAIT_X = 45
 PORTRAIT_Y = 205
 
-PORTRAIT_WIDTH = 500
-PORTRAIT_HEIGHT = 335
+PORTRAIT_WIDTH = 300
+PORTRAIT_HEIGHT = 330
 
 
-# =========================================================
-# READ TERMINAL
-# =========================================================
+# ============================================================
+# CHECK FILES
+# ============================================================
 
-if not TERMINAL_FILE.exists():
-
+if not TEMPLATE_FILE.exists():
     raise FileNotFoundError(
-        f"Terminal SVG not found:\n{TERMINAL_FILE}"
+        f"Terminal template not found:\n{TEMPLATE_FILE}"
     )
-
 
 if not ASCII_FILE.exists():
-
     raise FileNotFoundError(
-        f"ASCII SVG not found:\n{ASCII_FILE}"
+        f"ASCII SVG not found:\n{ASCII_FILE}\n\n"
+        "Run generate_ascii.py first."
     )
 
 
-terminal = TERMINAL_FILE.read_text(
-    encoding="utf-8"
-)
+# ============================================================
+# READ FILES
+# ============================================================
 
-ascii_svg = ASCII_FILE.read_text(
-    encoding="utf-8"
-)
+template = TEMPLATE_FILE.read_text(encoding="utf-8")
+ascii_svg = ASCII_FILE.read_text(encoding="utf-8")
 
 
-# =========================================================
-# GET ASCII DIMENSIONS
-# =========================================================
-
-width_match = re.search(
-    r'width="([0-9.]+)"',
-    ascii_svg
-)
-
-height_match = re.search(
-    r'height="([0-9.]+)"',
-    ascii_svg
-)
+# ============================================================
+# GET VIEWBOX
+# ============================================================
 
 viewbox_match = re.search(
-    r'viewBox="([^"]+)"',
-    ascii_svg
+    r'viewBox\s*=\s*["\']([^"\']+)["\']',
+    ascii_svg,
+    re.IGNORECASE
 )
-
-
-if not width_match or not height_match:
-
-    raise ValueError(
-        "Could not read ASCII SVG dimensions."
-    )
-
-
-ascii_width = float(
-    width_match.group(1)
-)
-
-ascii_height = float(
-    height_match.group(1)
-)
-
-
-# =========================================================
-# VIEWBOX
-# =========================================================
 
 if viewbox_match:
-
     viewbox = viewbox_match.group(1)
 
 else:
 
-    viewbox = (
-        f"0 0 "
-        f"{ascii_width} "
-        f"{ascii_height}"
+    width_match = re.search(
+        r'<svg[^>]*width\s*=\s*["\']([\d.]+)',
+        ascii_svg,
+        re.IGNORECASE
     )
 
+    height_match = re.search(
+        r'<svg[^>]*height\s*=\s*["\']([\d.]+)',
+        ascii_svg,
+        re.IGNORECASE
+    )
 
-# =========================================================
-# EXTRACT ASCII TEXT
-# =========================================================
+    if not width_match or not height_match:
+        raise ValueError(
+            "Could not determine ASCII SVG dimensions."
+        )
 
-# Get everything between <svg> and </svg>
-# without the outer SVG itself.
+    width = width_match.group(1)
+    height = height_match.group(1)
 
-content_match = re.search(
-    r"<svg[^>]*>(.*?)</svg>",
+    viewbox = f"0 0 {width} {height}"
+
+
+# ============================================================
+# GET CONTENT INSIDE ASCII SVG
+# ============================================================
+
+svg_match = re.search(
+    r'<svg\b[^>]*>(.*)</svg>',
     ascii_svg,
-    re.DOTALL
+    re.IGNORECASE | re.DOTALL
+)
+
+if not svg_match:
+    raise ValueError(
+        "Could not read ascii.svg"
+    )
+
+ascii_content = svg_match.group(1)
+
+
+# ============================================================
+# REMOVE ASCII SVG BACKGROUND RECTANGLES
+# ============================================================
+
+# Remove common full-size background rectangles.
+ascii_content = re.sub(
+    r'<rect\b[^>]*'
+    r'(?:width\s*=\s*["\'][^"\']+["\'][^>]*'
+    r'height\s*=\s*["\'][^"\']+["\'][^>]*)'
+    r'[^>]*/>',
+    '',
+    ascii_content,
+    flags=re.IGNORECASE
 )
 
 
-if not content_match:
+# ============================================================
+# REMOVE EXTRA CLIP / FILTER DEFINITIONS
+# ============================================================
 
-    raise ValueError(
-        "Could not extract ASCII SVG content."
-    )
-
-
-ascii_content = content_match.group(1)
-
-
-# =========================================================
-# REMOVE XML HEADER IF PRESENT
-# =========================================================
+# We don't need the ASCII SVG's own outer effects.
+# The main terminal handles the visual design.
 
 ascii_content = re.sub(
-    r"<\?xml.*?\?>",
-    "",
+    r'<defs\b[^>]*>.*?</defs>',
+    '',
     ascii_content,
-    flags=re.DOTALL
+    flags=re.IGNORECASE | re.DOTALL
 )
 
 
-# =========================================================
-# BUILD NESTED SVG
-# =========================================================
+# ============================================================
+# EMBED ASCII
+# ============================================================
 
-portrait_svg = f'''
-    <!-- ================================= -->
-    <!-- AUTO GENERATED ASCII PORTRAIT -->
-    <!-- ================================= -->
+embedded_ascii = f"""
+<svg
+    x="{PORTRAIT_X}"
+    y="{PORTRAIT_Y}"
+    width="{PORTRAIT_WIDTH}"
+    height="{PORTRAIT_HEIGHT}"
+    viewBox="{viewbox}"
+    preserveAspectRatio="xMidYMid meet"
+    overflow="hidden"
+    xmlns="http://www.w3.org/2000/svg">
 
-    <svg
-        x="{PORTRAIT_X}"
-        y="{PORTRAIT_Y}"
-        width="{PORTRAIT_WIDTH}"
-        height="{PORTRAIT_HEIGHT}"
-        viewBox="{viewbox}"
-        preserveAspectRatio="xMidYMid meet"
-        overflow="hidden">
+    {ascii_content}
 
-        {ascii_content}
-
-    </svg>
-'''
+</svg>
+"""
 
 
-# =========================================================
+# ============================================================
 # FIND PLACEHOLDER
-# =========================================================
+# ============================================================
 
-placeholder = (
-    "<!-- PORTRAIT_PLACEHOLDER -->"
-)
+placeholder = "<!-- PORTRAIT_PLACEHOLDER -->"
 
-
-if placeholder not in terminal:
+if placeholder not in template:
 
     raise ValueError(
-        """
-PORTRAIT_PLACEHOLDER is missing
-from terminal.svg.
-
-Add:
-
-<!-- PORTRAIT_PLACEHOLDER -->
-
-where the portrait should appear.
-"""
+        "PORTRAIT_PLACEHOLDER not found in terminal.svg"
     )
 
 
-# =========================================================
-# INSERT PORTRAIT
-# =========================================================
+# ============================================================
+# INSERT ASCII
+# ============================================================
 
-final_svg = terminal.replace(
+result = template.replace(
     placeholder,
-    portrait_svg
+    embedded_ascii
 )
 
 
-# =========================================================
-# SAVE
-# =========================================================
-
-OUTPUT_FILE.parent.mkdir(
-    parents=True,
-    exist_ok=True
-)
+# ============================================================
+# WRITE FINAL SVG
+# ============================================================
 
 OUTPUT_FILE.write_text(
-    final_svg,
+    result,
     encoding="utf-8"
 )
 
 
-# =========================================================
-# RESULT
-# =========================================================
+# ============================================================
+# SUCCESS
+# ============================================================
 
 print()
-print("======================================")
-print(" GLASS TERMINAL GENERATED")
-print("======================================")
-print()
-
-print(
-    f"ASCII size : "
-    f"{ascii_width:.0f} × "
-    f"{ascii_height:.0f}px"
-)
-
-print(
-    f"Portrait   : "
-    f"{PORTRAIT_WIDTH} × "
-    f"{PORTRAIT_HEIGHT}px"
-)
-
-print(
-    f"Viewport   : "
-    f"{viewbox}"
-)
+print("=" * 60)
+print("       PROFILE TERMINAL GENERATED SUCCESSFULLY")
+print("=" * 60)
 
 print()
 
-print(
-    f"Output     : "
-    f"{OUTPUT_FILE}"
-)
+print(f"Input ASCII : {ASCII_FILE}")
+print(f"Template    : {TEMPLATE_FILE}")
+print(f"Output      : {OUTPUT_FILE}")
 
 print()
-print("PORTRAIT CLIPPED + SCALED SUCCESSFULLY")
+
+print("Portrait:")
+print(f"  X      = {PORTRAIT_X}px")
+print(f"  Y      = {PORTRAIT_Y}px")
+print(f"  Width  = {PORTRAIT_WIDTH}px")
+print(f"  Height = {PORTRAIT_HEIGHT}px")
+
 print()
+
+print(f"ASCII viewBox = {viewbox}")
+
+print()
+
+print("✓ ASCII scaled")
+print("✓ ASCII centered")
+print("✓ ASCII overflow prevented")
+print("✓ Extra ASCII background removed")
+print("✓ Extra ASCII border removed")
+
+print()
+print("=" * 60)
