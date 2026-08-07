@@ -8,28 +8,56 @@ import re
 
 ROOT = Path(__file__).resolve().parent.parent
 
-TERMINAL_FILE = ROOT / "assets" / "svg" / "terminal.svg"
-ASCII_FILE = ROOT / "assets" / "svg" / "ascii.svg"
+TERMINAL_FILE = (
+    ROOT
+    / "assets"
+    / "svg"
+    / "terminal.svg"
+)
 
-OUTPUT_FILE = ROOT / "assets" / "svg" / "profile-terminal.svg"
+ASCII_FILE = (
+    ROOT
+    / "assets"
+    / "svg"
+    / "ascii.svg"
+)
+
+OUTPUT_FILE = (
+    ROOT
+    / "assets"
+    / "svg"
+    / "profile-terminal.svg"
+)
 
 
 # =========================================================
-# PORTRAIT WINDOW
+# PORTRAIT BOX
 # =========================================================
 
-BOX_X = 45
-BOX_Y = 205
+PORTRAIT_X = 45
+PORTRAIT_Y = 205
 
-BOX_WIDTH = 500
-BOX_HEIGHT = 335
-
-PADDING = 12
+PORTRAIT_WIDTH = 500
+PORTRAIT_HEIGHT = 335
 
 
 # =========================================================
-# READ SVG FILES
+# READ TERMINAL
 # =========================================================
+
+if not TERMINAL_FILE.exists():
+
+    raise FileNotFoundError(
+        f"Terminal SVG not found:\n{TERMINAL_FILE}"
+    )
+
+
+if not ASCII_FILE.exists():
+
+    raise FileNotFoundError(
+        f"ASCII SVG not found:\n{ASCII_FILE}"
+    )
+
 
 terminal = TERMINAL_FILE.read_text(
     encoding="utf-8"
@@ -41,7 +69,7 @@ ascii_svg = ASCII_FILE.read_text(
 
 
 # =========================================================
-# GET ASCII SVG DIMENSIONS
+# GET ASCII DIMENSIONS
 # =========================================================
 
 width_match = re.search(
@@ -54,10 +82,16 @@ height_match = re.search(
     ascii_svg
 )
 
+viewbox_match = re.search(
+    r'viewBox="([^"]+)"',
+    ascii_svg
+)
+
+
 if not width_match or not height_match:
 
     raise ValueError(
-        "Could not determine ASCII SVG dimensions."
+        "Could not read ASCII SVG dimensions."
     )
 
 
@@ -71,106 +105,84 @@ ascii_height = float(
 
 
 # =========================================================
-# EXTRACT ASCII CONTENT
+# VIEWBOX
 # =========================================================
 
-match = re.search(
-    r"<g>(.*?)</g>",
+if viewbox_match:
+
+    viewbox = viewbox_match.group(1)
+
+else:
+
+    viewbox = (
+        f"0 0 "
+        f"{ascii_width} "
+        f"{ascii_height}"
+    )
+
+
+# =========================================================
+# EXTRACT ASCII TEXT
+# =========================================================
+
+# Get everything between <svg> and </svg>
+# without the outer SVG itself.
+
+content_match = re.search(
+    r"<svg[^>]*>(.*?)</svg>",
     ascii_svg,
     re.DOTALL
 )
 
-if not match:
+
+if not content_match:
 
     raise ValueError(
-        "Could not find ASCII <g> element."
+        "Could not extract ASCII SVG content."
     )
 
 
-ascii_content = match.group(1)
+ascii_content = content_match.group(1)
 
 
 # =========================================================
-# AVAILABLE PORTRAIT SPACE
+# REMOVE XML HEADER IF PRESENT
 # =========================================================
 
-available_width = (
-    BOX_WIDTH - PADDING * 2
-)
-
-available_height = (
-    BOX_HEIGHT - PADDING * 2
-)
-
-
-# =========================================================
-# CALCULATE PROPORTIONAL SCALE
-# =========================================================
-
-scale_x = (
-    available_width / ascii_width
-)
-
-scale_y = (
-    available_height / ascii_height
-)
-
-scale = min(
-    scale_x,
-    scale_y
+ascii_content = re.sub(
+    r"<\?xml.*?\?>",
+    "",
+    ascii_content,
+    flags=re.DOTALL
 )
 
 
 # =========================================================
-# FINAL SIZE AFTER SCALE
+# BUILD NESTED SVG
 # =========================================================
 
-final_width = (
-    ascii_width * scale
-)
+portrait_svg = f'''
+    <!-- ================================= -->
+    <!-- AUTO GENERATED ASCII PORTRAIT -->
+    <!-- ================================= -->
 
-final_height = (
-    ascii_height * scale
-)
-
-
-# =========================================================
-# CENTER ASCII
-# =========================================================
-
-offset_x = (
-    BOX_X
-    + (BOX_WIDTH - final_width) / 2
-)
-
-offset_y = (
-    BOX_Y
-    + (BOX_HEIGHT - final_height) / 2
-)
-
-
-# =========================================================
-# INSERT ASCII
-# =========================================================
-
-portrait = f"""
-<g clip-path="url(#portraitClip)">
-
-    <g
-        transform="
-        translate({offset_x:.2f} {offset_y:.2f})
-        scale({scale:.4f})">
+    <svg
+        x="{PORTRAIT_X}"
+        y="{PORTRAIT_Y}"
+        width="{PORTRAIT_WIDTH}"
+        height="{PORTRAIT_HEIGHT}"
+        viewBox="{viewbox}"
+        preserveAspectRatio="xMidYMid meet"
+        overflow="hidden">
 
         {ascii_content}
 
-    </g>
-
-</g>
-"""
+    </svg>
+'''
 
 
 # =========================================================
-# PLACEHOLDER
+# FIND PLACEHOLDER
 # =========================================================
 
 placeholder = (
@@ -181,18 +193,26 @@ placeholder = (
 if placeholder not in terminal:
 
     raise ValueError(
-        "PORTRAIT_PLACEHOLDER is missing "
-        "from terminal.svg"
+        """
+PORTRAIT_PLACEHOLDER is missing
+from terminal.svg.
+
+Add:
+
+<!-- PORTRAIT_PLACEHOLDER -->
+
+where the portrait should appear.
+"""
     )
 
 
 # =========================================================
-# BUILD FINAL SVG
+# INSERT PORTRAIT
 # =========================================================
 
 final_svg = terminal.replace(
     placeholder,
-    portrait
+    portrait_svg
 )
 
 
@@ -228,14 +248,14 @@ print(
 )
 
 print(
-    f"Scale      : "
-    f"{scale:.4f}"
+    f"Portrait   : "
+    f"{PORTRAIT_WIDTH} × "
+    f"{PORTRAIT_HEIGHT}px"
 )
 
 print(
-    f"Final size : "
-    f"{final_width:.0f} × "
-    f"{final_height:.0f}px"
+    f"Viewport   : "
+    f"{viewbox}"
 )
 
 print()
@@ -245,4 +265,6 @@ print(
     f"{OUTPUT_FILE}"
 )
 
+print()
+print("PORTRAIT CLIPPED + SCALED SUCCESSFULLY")
 print()

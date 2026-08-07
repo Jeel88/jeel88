@@ -1,6 +1,5 @@
 from pathlib import Path
-from PIL import Image, ImageOps, ImageEnhance, ImageFilter
-import html
+from PIL import Image, ImageOps, ImageEnhance
 
 
 # =========================================================
@@ -10,6 +9,7 @@ import html
 ROOT = Path(__file__).resolve().parent.parent
 
 PHOTO = ROOT / "photo" / "profile.jpg"
+
 OUTPUT = ROOT / "assets" / "svg" / "ascii.svg"
 
 
@@ -17,34 +17,31 @@ OUTPUT = ROOT / "assets" / "svg" / "ascii.svg"
 # ASCII SETTINGS
 # =========================================================
 
+# High-density photographic ASCII
 COLUMNS = 110
 
-ASCII_CHARS = "-:.=+*#%@"
+# Dark -> bright
+ASCII_CHARS = " .:-=+*#%@"
 
+# White ASCII
 TEXT_COLOR = "#FFFFFF"
 
+# Character appearance
 FONT_SIZE = 5
 LINE_HEIGHT = 6
 
+# SVG padding
 PADDING = 10
 
+
+# =========================================================
+# PHOTO ADJUSTMENT
+# =========================================================
+
+# Good starting values for a dark photograph
 BRIGHTNESS = 1.35
-CONTRAST = 1.6
-SHARPNESS = 1.2
-
-
-# =========================================================
-# IMAGE ADJUSTMENT
-# =========================================================
-
-# Brightness
-BRIGHTNESS = 1.65
-
-# Contrast
-CONTRAST = 1.45
-
-# Sharpness
-SHARPNESS = 1.35
+CONTRAST = 1.60
+SHARPNESS = 1.20
 
 
 # =========================================================
@@ -52,23 +49,44 @@ SHARPNESS = 1.35
 # =========================================================
 
 if not PHOTO.exists():
+
     raise FileNotFoundError(
-        f"Photo not found:\n{PHOTO}"
+        f"""
+Photo not found:
+
+{PHOTO}
+
+Put your photo here:
+
+photo/profile.jpg
+"""
     )
 
 
 # =========================================================
-# LOAD IMAGE
+# LOAD PHOTO
 # =========================================================
 
 image = Image.open(PHOTO)
 
-# Convert to grayscale
+print()
+print("======================================")
+print(" GENERATING ASCII PORTRAIT")
+print("======================================")
+print()
+
+print(f"Input : {PHOTO}")
+
+
+# =========================================================
+# GRAYSCALE
+# =========================================================
+
 image = ImageOps.grayscale(image)
 
 
 # =========================================================
-# BRIGHTEN DARK PHOTO
+# BRIGHTNESS
 # =========================================================
 
 image = ImageEnhance.Brightness(
@@ -77,7 +95,7 @@ image = ImageEnhance.Brightness(
 
 
 # =========================================================
-# INCREASE CONTRAST
+# CONTRAST
 # =========================================================
 
 image = ImageEnhance.Contrast(
@@ -86,7 +104,7 @@ image = ImageEnhance.Contrast(
 
 
 # =========================================================
-# SHARPEN
+# SHARPNESS
 # =========================================================
 
 image = ImageEnhance.Sharpness(
@@ -95,7 +113,7 @@ image = ImageEnhance.Sharpness(
 
 
 # =========================================================
-# AUTO-CONTRAST
+# AUTO CONTRAST
 # =========================================================
 
 image = ImageOps.autocontrast(
@@ -114,47 +132,57 @@ aspect_ratio = (
     original_height / original_width
 )
 
-CHARACTER_RATIO = 0.5
+# ASCII characters are taller than they are wide.
+# This compensates for that difference.
+CHARACTER_ASPECT = 0.50
 
 rows = max(
     1,
     int(
         COLUMNS
         * aspect_ratio
-        * CHARACTER_RATIO
+        * CHARACTER_ASPECT
     )
 )
 
+
 image = image.resize(
-    (COLUMNS, rows),
+    (
+        COLUMNS,
+        rows
+    ),
     Image.Resampling.LANCZOS
 )
 
 
 # =========================================================
-# ASCII CONVERSION
+# CONVERT TO ASCII
 # =========================================================
 
-pixels = list(image.getdata())
+pixels = list(
+    image.getdata()
+)
 
 ascii_lines = []
 
 
-for row in range(rows):
+for y in range(rows):
 
     line = ""
 
-    for column in range(COLUMNS):
+    for x in range(COLUMNS):
 
-        pixel = pixels[
-            row * COLUMNS + column
+        brightness = pixels[
+            y * COLUMNS + x
         ]
 
-        # Brightness → ASCII character
+        # Map 0-255 to ASCII characters
         index = int(
-            pixel
+            brightness
             / 255
-            * (len(ASCII_CHARS) - 1)
+            * (
+                len(ASCII_CHARS) - 1
+            )
         )
 
         line += ASCII_CHARS[index]
@@ -166,14 +194,15 @@ for row in range(rows):
 # SVG DIMENSIONS
 # =========================================================
 
-svg_width = (
+CHAR_WIDTH = FONT_SIZE * 0.62
+
+SVG_WIDTH = (
     COLUMNS
-    * FONT_SIZE
-    * 0.62
+    * CHAR_WIDTH
     + PADDING * 2
 )
 
-svg_height = (
+SVG_HEIGHT = (
     rows
     * LINE_HEIGHT
     + PADDING * 2
@@ -181,62 +210,51 @@ svg_height = (
 
 
 # =========================================================
-# CREATE SVG
+# BUILD SVG
 # =========================================================
 
-svg = f'''<svg
-xmlns="http://www.w3.org/2000/svg"
-width="{svg_width:.0f}"
-height="{svg_height:.0f}"
-viewBox="0 0 {svg_width:.0f} {svg_height:.0f}"
-xml:space="preserve">
+svg = f'''<?xml version="1.0" encoding="UTF-8"?>
 
-<style>
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="{SVG_WIDTH:.2f}"
+    height="{SVG_HEIGHT:.2f}"
+    viewBox="0 0 {SVG_WIDTH:.2f} {SVG_HEIGHT:.2f}"
+    xml:space="preserve">
 
-.ascii {{
-    font-family:
-        "SFMono-Regular",
-        "Cascadia Mono",
-        "JetBrains Mono",
-        Consolas,
-        monospace;
-
-    font-size: {FONT_SIZE}px;
-
-    font-weight: 700;
-
-    fill: {TEXT_COLOR};
-
-    letter-spacing: 0px;
-}}
-
-</style>
-
-<g>
 '''
 
 
 # =========================================================
-# ADD ASCII
+# ASCII TEXT
 # =========================================================
 
-for index, line in enumerate(ascii_lines):
+for row, line in enumerate(ascii_lines):
 
-    safe_line = html.escape(line)
+    # Escape XML-sensitive characters
+    line = (
+        line
+        .replace("&", "&amp;")
+        .replace("<", "&lt;")
+        .replace(">", "&gt;")
+    )
 
     y = (
         PADDING
         + FONT_SIZE
-        + index * LINE_HEIGHT
+        + row * LINE_HEIGHT
     )
 
     svg += f'''
-<text
-    class="ascii"
-    x="{PADDING}"
-    y="{y}">
-    {safe_line}
-</text>
+    <text
+        x="{PADDING}"
+        y="{y:.2f}"
+        fill="{TEXT_COLOR}"
+        font-family="monospace"
+        font-size="{FONT_SIZE}px"
+        font-weight="700"
+        letter-spacing="0"
+        xml:space="preserve">{line}</text>
 '''
 
 
@@ -245,7 +263,6 @@ for index, line in enumerate(ascii_lines):
 # =========================================================
 
 svg += """
-</g>
 </svg>
 """
 
@@ -266,20 +283,20 @@ OUTPUT.write_text(
 
 
 # =========================================================
-# OUTPUT
+# RESULT
 # =========================================================
 
 print()
-print("======================================")
-print(" BRIGHT ASCII PORTRAIT GENERATED")
-print("======================================")
-print()
+print("--------------------------------------")
 print(f"Columns   : {COLUMNS}")
 print(f"Rows      : {rows}")
 print(f"Brightness: {BRIGHTNESS}")
 print(f"Contrast  : {CONTRAST}")
 print(f"Sharpness : {SHARPNESS}")
 print(f"Color     : {TEXT_COLOR}")
+print("--------------------------------------")
 print()
 print(f"Output: {OUTPUT}")
+print()
+print("ASCII PORTRAIT GENERATED SUCCESSFULLY")
 print()
