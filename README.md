@@ -18,15 +18,36 @@
 
 ---
 
+
+
+## 📊 GitHub Stats
+
+<p align="center">
+
+<img
+  src="https://github-readme-stats.vercel.app/api?username=Jeel88&show_icons=true&theme=tokyonight&hide_border=true"
+  height="180"
+/>
+
+<img
+  src="https://github-readme-stats.vercel.app/api/top-langs/?username=Jeel88&layout=compact&theme=tokyonight&hide_border=true"
+  height="180"
+/>
+
+</p>
+
+<p align="center">
+
+<img
+  src="https://streak-stats.demolab.com?user=Jeel88&theme=tokyonight&hide_border=true"
+  width="700"
+/>
+
+</p>
+
+---
 ## 👨‍💻 About Me
 
-```text
 Name        : Jeel Savaliya
 Role        : Software Developer
 Location    : India
-
-Languages   : C, C++, Java, Python
-Web         : HTML, CSS, JavaScript, React
-Database    : MySQL, Firebase, Supabase
-Interests   : Machine Learning, Data Analysis
-Tools       : Git, GitHub
