@@ -22,14 +22,9 @@
 
 ## 📊 GitHub Stats
 
-<p align="center">
-
-<img
-  src="https://streak-stats.demolab.com?user=Jeel88&theme=tokyonight&hide_border=true"
-  width="700"
-/>
-
-</p>
+<div align="center">
+  <img src="https://streak-stats.demolab.com?user=Jeel88&theme=tokyonight&hide_border=true" width="700" alt="GitHub Streak Stats" />
+</div>
 
 ---
 ## 👨‍💻 About Me
