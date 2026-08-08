@@ -1,48 +1,28 @@
 <div align="center">
 
-# 👋 Hi, I'm Jeel Savaliya
+<img src="./assets/svg/profile-terminal.svg" width="100%" alt="Jeel Savaliya Terminal Profile"/>
 
-### • Python Developer • Web Developer • AI Developer
+</div>
 
----
+<br>
 
 <div align="center">
 
-<img
-    src="./assets/svg/profile-terminal.svg"
-    width="1000"
-    alt="Jeel Savaliya terminal profile"
-/>
+<img src="./assets/svg/terminal.svg" width="100%" alt="Jeel Savaliya Tech Stack"/>
 
 </div>
 
 ---
 
-</div>
-
-## About Me
-
-```bash
-Last Login : Today
-
-jeel@github % whoami
-```
+## 👨‍💻 About Me
 
 ```text
 Name        : Jeel Savaliya
-Education   : B.Tech Information Technology
-Learning    : • Python • Web • AI • Machine Learning • Cloud
-Dream       : MS in USA 🇺🇸
-```
+Role        : Software Developer
+Location    : India
 
----
-
-## Projects
-
-🚧 Coming Soon...
-
----
-
-## Social
-
-Coming Soon...
+Languages   : C, C++, Java, Python
+Web         : HTML, CSS, JavaScript, React
+Database    : MySQL, Firebase, Supabase
+Interests   : Machine Learning, Data Analysis
+Tools       : Git, GitHub

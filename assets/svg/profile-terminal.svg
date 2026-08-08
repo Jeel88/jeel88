@@ -1002,7 +1002,7 @@
         stroke="#1e293b"
         stroke-width="1"/>
 
-
+ 
     <!-- ================================================= -->
     <!-- JEEL ASCII -->
     <!-- ================================================= -->
@@ -1257,7 +1257,7 @@
     font-size="14"
     font-family="monospace">
 
-    https://www.linkedin.com/in/jeeel-savaliya888/
+    linkedin.com/in/jeeel-savaliya888/
 
 </text>
 
@@ -1285,6 +1285,51 @@
     font-family="monospace">
 
     jeelsavaliya888@gmail.com
+
+</text>
+
+<!-- ================================================= -->
+<!-- STATUS DIVIDER -->
+<!-- ================================================= -->
+
+<line
+    x1="520"
+    y1="545"
+    x2="850"
+    y2="545"
+    stroke="#334155"
+    stroke-width="1"/>
+
+
+<!-- ================================================= -->
+<!-- STATUS -->
+<!-- ================================================= -->
+
+<text
+    x="520"
+    y="565"
+    fill="#64748b"
+    font-size="13"
+    font-family="monospace">
+
+    status
+
+</text>
+
+<circle
+    cx="575"
+    cy="561"
+    r="4"
+    fill="#22c55e"/>
+
+<text
+    x="588"
+    y="565"
+    fill="#22c55e"
+    font-size="13"
+    font-family="monospace">
+
+    Available
 
 </text>
 

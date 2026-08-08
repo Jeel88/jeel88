@@ -1,0 +1,521 @@
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="960"
+    height="580"
+    viewBox="0 0 960 580">
+
+    <defs>
+
+        <!-- ================================================= -->
+        <!-- GLASS -->
+        <!-- ================================================= -->
+
+        <linearGradient
+            id="glass"
+            x1="0"
+            y1="0"
+            x2="1"
+            y2="1">
+
+            <stop
+                offset="0%"
+                stop-color="#111827"/>
+
+            <stop
+                offset="100%"
+                stop-color="#020617"/>
+
+        </linearGradient>
+
+
+        <!-- ================================================= -->
+        <!-- GLOW -->
+        <!-- ================================================= -->
+
+        <radialGradient id="glow">
+
+            <stop
+                offset="0%"
+                stop-color="#38bdf8"
+                stop-opacity="0.12"/>
+
+            <stop
+                offset="100%"
+                stop-color="#38bdf8"
+                stop-opacity="0"/>
+
+        </radialGradient>
+
+
+        <!-- ================================================= -->
+        <!-- SHADOW -->
+        <!-- ================================================= -->
+
+        <filter id="shadow">
+
+            <feDropShadow
+                dx="0"
+                dy="15"
+                stdDeviation="20"
+                flood-opacity="0.35"/>
+
+        </filter>
+
+    </defs>
+
+
+    <!-- ================================================= -->
+    <!-- TERMINAL WINDOW -->
+    <!-- ================================================= -->
+
+    <rect
+        x="20"
+        y="20"
+        width="920"
+        height="540"
+        rx="24"
+        fill="url(#glass)"
+        stroke="#334155"
+        stroke-width="1"
+        filter="url(#shadow)"/>
+
+
+    <!-- ================================================= -->
+    <!-- BACKGROUND GLOW -->
+    <!-- ================================================= -->
+
+    <ellipse
+        cx="480"
+        cy="300"
+        rx="420"
+        ry="250"
+        fill="url(#glow)"/>
+
+
+    <!-- ================================================= -->
+    <!-- macOS BUTTONS -->
+    <!-- ================================================= -->
+
+    <circle
+        cx="55"
+        cy="55"
+        r="8"
+        fill="#ff5f57"/>
+
+    <circle
+        cx="80"
+        cy="55"
+        r="8"
+        fill="#febc2e"/>
+
+    <circle
+        cx="105"
+        cy="55"
+        r="8"
+        fill="#28c840"/>
+
+
+    <!-- ================================================= -->
+    <!-- TITLE -->
+    <!-- ================================================= -->
+
+    <text
+        x="480"
+        y="61"
+        text-anchor="middle"
+        fill="#94a3b8"
+        font-size="16"
+        font-family="monospace">
+
+        jeel@github — skills
+
+    </text>
+
+
+    <!-- ================================================= -->
+    <!-- TOP DIVIDER -->
+    <!-- ================================================= -->
+
+    <line
+        x1="20"
+        y1="90"
+        x2="940"
+        y2="90"
+        stroke="#334155"
+        stroke-width="1"/>
+
+
+    <!-- ================================================= -->
+    <!-- COMMAND -->
+    <!-- ================================================= -->
+
+    <text
+        x="50"
+        y="130"
+        fill="#e2e8f0"
+        font-size="18"
+        font-family="monospace">
+
+        jeel@github %
+
+    </text>
+
+    <text
+        x="215"
+        y="130"
+        fill="#38bdf8"
+        font-size="18"
+        font-family="monospace">
+
+        cat skills.txt
+
+    </text>
+
+
+    <!-- ================================================= -->
+    <!-- LANGUAGES -->
+    <!-- ================================================= -->
+
+    <text
+        x="70"
+        y="175"
+        fill="#38bdf8"
+        font-size="15"
+        font-family="monospace">
+
+        LANGUAGES
+
+    </text>
+
+
+    <!-- C -->
+    <image
+        href="https://raw.githubusercontent.com/devicons/devicon/master/icons/c/c-original.svg"
+        x="70"
+        y="190"
+        width="42"
+        height="42"/>
+
+    <text
+        x="120"
+        y="217"
+        fill="#e2e8f0"
+        font-size="14"
+        font-family="monospace">
+
+        C
+
+    </text>
+
+
+    <!-- C++ -->
+    <image
+        href="https://raw.githubusercontent.com/devicons/devicon/master/icons/cplusplus/cplusplus-original.svg"
+        x="190"
+        y="190"
+        width="42"
+        height="42"/>
+
+    <text
+        x="240"
+        y="217"
+        fill="#e2e8f0"
+        font-size="14"
+        font-family="monospace">
+
+        C++
+
+    </text>
+
+
+    <!-- JAVA -->
+    <image
+        href="https://raw.githubusercontent.com/devicons/devicon/master/icons/java/java-original.svg"
+        x="320"
+        y="190"
+        width="42"
+        height="42"/>
+
+    <text
+        x="370"
+        y="217"
+        fill="#e2e8f0"
+        font-size="14"
+        font-family="monospace">
+
+        Java
+
+    </text>
+
+
+    <!-- PYTHON -->
+    <image
+        href="https://raw.githubusercontent.com/devicons/devicon/master/icons/python/python-original.svg"
+        x="450"
+        y="190"
+        width="42"
+        height="42"/>
+
+    <text
+        x="500"
+        y="217"
+        fill="#e2e8f0"
+        font-size="14"
+        font-family="monospace">
+
+        Python
+
+    </text>
+
+
+    <!-- ================================================= -->
+    <!-- WEB -->
+    <!-- ================================================= -->
+
+    <text
+        x="70"
+        y="275"
+        fill="#38bdf8"
+        font-size="15"
+        font-family="monospace">
+
+        WEB
+
+    </text>
+
+
+    <!-- HTML -->
+    <image
+        href="https://raw.githubusercontent.com/devicons/devicon/master/icons/html5/html5-original-wordmark.svg"
+        x="70"
+        y="290"
+        width="42"
+        height="42"/>
+
+    <text
+        x="120"
+        y="317"
+        fill="#e2e8f0"
+        font-size="14"
+        font-family="monospace">
+
+        HTML5
+
+    </text>
+
+
+    <!-- CSS -->
+    <image
+        href="https://raw.githubusercontent.com/devicons/devicon/master/icons/css3/css3-original-wordmark.svg"
+        x="220"
+        y="290"
+        width="42"
+        height="42"/>
+
+    <text
+        x="270"
+        y="317"
+        fill="#e2e8f0"
+        font-size="14"
+        font-family="monospace">
+
+        CSS3
+
+    </text>
+
+
+    <!-- JAVASCRIPT -->
+    <image
+        href="https://raw.githubusercontent.com/devicons/devicon/master/icons/javascript/javascript-original.svg"
+        x="350"
+        y="290"
+        width="42"
+        height="42"/>
+
+    <text
+        x="400"
+        y="317"
+        fill="#e2e8f0"
+        font-size="14"
+        font-family="monospace">
+
+        JavaScript
+
+    </text>
+
+
+    <!-- REACT -->
+    <image
+        href="https://raw.githubusercontent.com/devicons/devicon/master/icons/react/react-original-wordmark.svg"
+        x="530"
+        y="290"
+        width="42"
+        height="42"/>
+
+    <text
+        x="580"
+        y="317"
+        fill="#e2e8f0"
+        font-size="14"
+        font-family="monospace">
+
+        React
+
+    </text>
+
+
+    <!-- ================================================= -->
+    <!-- DATABASE -->
+    <!-- ================================================= -->
+
+    <text
+        x="70"
+        y="375"
+        fill="#38bdf8"
+        font-size="15"
+        font-family="monospace">
+
+        DATABASE
+
+    </text>
+
+
+    <!-- MYSQL -->
+    <image
+        href="https://raw.githubusercontent.com/devicons/devicon/master/icons/mysql/mysql-original-wordmark.svg"
+        x="70"
+        y="390"
+        width="42"
+        height="42"/>
+
+    <text
+        x="120"
+        y="417"
+        fill="#e2e8f0"
+        font-size="14"
+        font-family="monospace">
+
+        MySQL
+
+    </text>
+
+
+    <!-- FIREBASE -->
+    <image
+        href="https://www.vectorlogo.zone/logos/firebase/firebase-icon.svg"
+        x="230"
+        y="390"
+        width="42"
+        height="42"/>
+
+    <text
+        x="280"
+        y="417"
+        fill="#e2e8f0"
+        font-size="14"
+        font-family="monospace">
+
+        Firebase
+
+    </text>
+
+
+    <!-- SUPABASE -->
+    <image
+        href="https://cdn.simpleicons.org/supabase/38bdf8"
+        x="390"
+        y="390"
+        width="42"
+        height="42"/>
+
+    <text
+        x="440"
+        y="417"
+        fill="#e2e8f0"
+        font-size="14"
+        font-family="monospace">
+
+        Supabase
+
+    </text>
+
+
+    <!-- ================================================= -->
+    <!-- OTHER -->
+    <!-- ================================================= -->
+
+    <text
+        x="70"
+        y="475"
+        fill="#38bdf8"
+        font-size="15"
+        font-family="monospace">
+
+        OTHER
+
+    </text>
+
+
+    <!-- GIT -->
+    <image
+        href="https://raw.githubusercontent.com/devicons/devicon/master/icons/git/git-original.svg"
+        x="70"
+        y="490"
+        width="42"
+        height="42"/>
+
+    <text
+        x="120"
+        y="517"
+        fill="#e2e8f0"
+        font-size="14"
+        font-family="monospace">
+
+        Git
+
+    </text>
+
+
+    <!-- GITHUB -->
+    <image
+        href="https://raw.githubusercontent.com/devicons/devicon/master/icons/github/github-original.svg"
+        x="200"
+        y="490"
+        width="42"
+        height="42"/>
+
+    <text
+        x="250"
+        y="517"
+        fill="#e2e8f0"
+        font-size="14"
+        font-family="monospace">
+
+        GitHub
+
+    </text>
+
+
+
+
+    <!-- ================================================= -->
+    <!-- CURSOR -->
+    <!-- ================================================= -->
+
+    <rect
+        x="875"
+        y="520"
+        width="8"
+        height="16"
+        rx="1"
+        fill="#38bdf8">
+
+        <animate
+            attributeName="opacity"
+            values="1;0;1"
+            dur="1s"
+            repeatCount="indefinite"/>
+
+    </rect>
+
+</svg>
