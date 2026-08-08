@@ -8,7 +8,7 @@
 
 <div align="center">
 
-<img src="./assets/svg/terminal.svg" width="100%" alt="Jeel Savaliya Tech Stack"/>
+<img src="./assets/svg/tech-stack.svg" width="100%" alt="Jeel Savaliya Tech Stack"/>
 
 </div>
 
