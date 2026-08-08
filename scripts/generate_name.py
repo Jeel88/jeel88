@@ -1,6 +1,5 @@
 from pathlib import Path
 
-
 # ============================================================
 # PATHS
 # ============================================================
@@ -13,7 +12,6 @@ OUTPUT_FILE = (
     / "svg"
     / "name.svg"
 )
-
 
 # ============================================================
 # ASCII JEEL
@@ -28,7 +26,6 @@ JEEL = [
     " ╚════╝ ╚══════╝╚══════╝╚══════╝",
 ]
 
-
 # ============================================================
 # SETTINGS
 # ============================================================
@@ -42,9 +39,8 @@ LINE_HEIGHT = 13
 TEXT_X = 0
 TEXT_Y = 12
 
-
 # ============================================================
-# BUILD ASCII TEXT
+# BUILD ASCII
 # ============================================================
 
 text_elements = []
@@ -55,22 +51,20 @@ for index, line in enumerate(JEEL):
 
     text_elements.append(
         f'''
-        <text
-            x="{TEXT_X}"
-            y="{y}"
-            fill="#38bdf8"
-            font-size="{FONT_SIZE}px"
-            font-family="monospace"
-            xml:space="preserve">{line}</text>
-        '''
+    <text
+        x="{TEXT_X}"
+        y="{y}"
+        fill="#FFFFFF"
+        font-size="{FONT_SIZE}px"
+        font-family="monospace"
+        xml:space="preserve">{line}</text>
+    '''
     )
-
 
 ascii_text = "\n".join(text_elements)
 
-
 # ============================================================
-# SVG
+# COMPLETE SVG
 # ============================================================
 
 svg = f'''<?xml version="1.0" encoding="UTF-8"?>
@@ -116,38 +110,8 @@ svg = f'''<?xml version="1.0" encoding="UTF-8"?>
 
     </g>
 
-
-    <!-- ================================= -->
-    <!-- CURSOR -->
-    <!-- ================================= -->
-
-    <rect
-        x="0"
-        y="4"
-        width="3"
-        height="72"
-        fill="#38bdf8">
-
-        <animate
-            attributeName="x"
-            from="0"
-            to="{WIDTH}"
-            dur="1.8s"
-            begin="0s"
-            fill="freeze"/>
-
-        <animate
-            attributeName="opacity"
-            values="1;1;0;1"
-            dur="0.8s"
-            begin="0s"
-            repeatCount="indefinite"/>
-
-    </rect>
-
 </svg>
 '''
-
 
 # ============================================================
 # WRITE
@@ -163,7 +127,6 @@ OUTPUT_FILE.write_text(
     encoding="utf-8"
 )
 
-
 # ============================================================
 # SUCCESS
 # ============================================================
@@ -176,7 +139,8 @@ print("=" * 55)
 print()
 print(f"Output : {OUTPUT_FILE}")
 print(f"Size   : {WIDTH}px × {HEIGHT}px")
-print("Effect : Left → right terminal typing animation")
+print("Effect : Left → right printing")
+print("Cursor : Disabled")
 
 print()
 print("=" * 55)
