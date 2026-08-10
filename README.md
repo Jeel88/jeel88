@@ -38,6 +38,6 @@
 ## 👨‍💻 About Me
 
 <p align="center">
-  <b>👤 Name:</b> Jeel Savaliya &nbsp;&nbsp;|&nbsp;&nbsp; <b>💻 Role:</b> Software Developer &nbsp;&nbsp;|&nbsp;&nbsp; <b>📍 Location:</b> India
+  <b>👤 Name:</b> Jeel Savaliya &nbsp;&nbsp;|&nbsp;&nbsp; <b>💻 Role:</b> Software Developer &nbsp;&nbsp;|&nbsp;&nbsp; <b>📍 Location:</b> Mumbai,India
 </p>
 
