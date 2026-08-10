@@ -23,7 +23,10 @@
 ## 📊 GitHub Stats
 
 <div align="center">
-  <img src="https://streak-stats.demolab.com?user=Jeel88&theme=tokyonight&hide_border=true" width="700" alt="GitHub Streak Stats" />
+  <img
+  src="https://github-readme-stats.vercel.app/api?username=Jeel88&show_icons=true&theme=tokyonight&hide_border=true&cache_seconds=21600"
+  width="480"
+/>
 </div>
 
 ---
