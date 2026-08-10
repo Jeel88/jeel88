@@ -9,7 +9,7 @@
 
 <div align="center">
 
-<img src="./assets/svg/profile-terminal.svg" width="100%" alt="Jeel Savaliya Terminal Profile"/>
+<img src="./assets/svg/profile-terminal.svg" width="80%" alt="Jeel Savaliya Terminal Profile"/>
 
 </div>
 
