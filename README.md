@@ -41,7 +41,7 @@
 <img
   src="./assets/stats/streak.svg"
   alt="GitHub Streak"
-  width="700"
+  width="550"
 />
 
 </p>
