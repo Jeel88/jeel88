@@ -25,7 +25,7 @@ jobs:
           mkdir -p assets/stats
 
           curl -L \
-            "https://streak-stats.demolab.com/?user=Jeel88&theme=tokyonight&hide_border=true" \
+            "https://streak-stats.demolab.com/?user=Jeel88&theme=blood&hide_border=true" \
             -o assets/stats/streak.svg
 
       - name: Commit updated stats
